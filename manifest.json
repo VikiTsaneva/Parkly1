@@ -1,6 +1,6 @@
 {
-  "name": "Тест PWA",
-  "short_name": "PWA Test",
+  "name": "Parkly",
+  "short_name": "Parkly",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
