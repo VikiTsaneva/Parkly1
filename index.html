@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Parkly</title>
+    <title>Parkly - Намерете свободни паркоместа</title>
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -324,6 +324,7 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             text-align: left;
             min-width: 280px;
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             border-left: 5px solid var(--secondary);
             pointer-events: none;
@@ -371,6 +372,7 @@
             box-shadow: 0 8px 30px rgba(0,0,0,0.12);
             z-index: 1000;
             min-width: 260px;
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             border: 1px solid var(--border-color);
             pointer-events: none;
@@ -516,6 +518,7 @@
             display: flex;
             align-items: center;
             gap: 20px;
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             pointer-events: auto;
             transition: background-color 0.3s ease;
@@ -553,6 +556,8 @@
             pointer-events: auto;
             transition: background-color 0.3s ease;
             border: 1px solid var(--border-color);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
         }
         
         .controls button {
@@ -592,6 +597,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             z-index: 1000;
             font-size: 0.85rem;
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             pointer-events: auto;
             transition: background-color 0.3s ease;
@@ -1304,6 +1310,8 @@
             animation: slideIn 0.3s ease;
             transition: background-color 0.3s ease;
             border: 1px solid var(--border-color);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
         }
 
         .contact-modal.active {
@@ -2079,7 +2087,7 @@
         }
 
         body.offline .lang-en::after {
-            content: "📴 Offline mode";
+            content: " Offline mode";
         }
     </style>
 </head>
