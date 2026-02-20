@@ -141,8 +141,8 @@
         }
 
         .sidebar-header img.logo-icon {
-            width: 96px;
-            height: 96px;
+            width: 80px;
+            height: 80px;
             object-fit: contain;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
@@ -324,6 +324,7 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             text-align: left;
             min-width: 280px;
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             border-left: 5px solid var(--secondary);
             pointer-events: none;
@@ -371,6 +372,7 @@
             box-shadow: 0 8px 30px rgba(0,0,0,0.12);
             z-index: 1000;
             min-width: 260px;
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             border: 1px solid var(--border-color);
             pointer-events: none;
@@ -516,6 +518,7 @@
             display: flex;
             align-items: center;
             gap: 20px;
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             pointer-events: auto;
             transition: background-color 0.3s ease;
@@ -553,6 +556,8 @@
             pointer-events: auto;
             transition: background-color 0.3s ease;
             border: 1px solid var(--border-color);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
         }
         
         .controls button {
@@ -592,6 +597,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             z-index: 1000;
             font-size: 0.85rem;
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             pointer-events: auto;
             transition: background-color 0.3s ease;
@@ -630,6 +636,10 @@
         .legend-color.red {
             background: var(--accent);
             opacity: 0.7;
+        }
+
+        .icon-success {
+            color: var(--success);
         }
 
         /* Стилове за профил */
@@ -925,6 +935,10 @@
 
         .auth-links a:hover {
             text-decoration: underline;
+        }
+
+        .auth-links.auth-links-margin {
+            margin-top: 20px;
         }
 
         .auth-divider {
@@ -1304,6 +1318,8 @@
             animation: slideIn 0.3s ease;
             transition: background-color 0.3s ease;
             border: 1px solid var(--border-color);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
         }
 
         .contact-modal.active {
@@ -2063,7 +2079,7 @@
         <!-- Сайдбар с навигация -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <h2><i class="fas fa-parking logo-icon"></i> <span class="lang-bg">Parkly</span><span class="lang-en">Parkly</span></h2>
+                <h2><img src="logo .svg" alt="Parkly logo" class="logo-icon"> <span class="lang-bg">Parkly</span><span class="lang-en">Parkly</span></h2>
             </div>
             
             <div class="nav-menu">
@@ -2213,7 +2229,7 @@
                                     <span class="value">3</span>
                                 </div>
                                 <div class="stat-item">
-                                    <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                                    <i class="fas fa-check-circle icon-success"></i>
                                     <span class="label lang-bg">Свободни:</span>
                                     <span class="label lang-en">Free:</span>
                                     <span class="value" id="freeSpots">1</span>
@@ -2368,7 +2384,7 @@
                                     <button type="button" class="social-btn"><i class="fab fa-apple"></i></button>
                                 </div>
                                 
-                                <div class="auth-links" style="margin-top: 20px;">
+                                <div class="auth-links auth-links-margin">
                                     <span class="lang-bg">Нямате профил?</span>
                                     <span class="lang-en">Don't have an account?</span>
                                     <a href="#" onclick="document.querySelector('[data-page=register]').click(); return false;" class="lang-bg">Регистрирайте се</a>
@@ -2457,7 +2473,7 @@
                                     <button type="button" class="social-btn"><i class="fab fa-apple"></i></button>
                                 </div>
                                 
-                                <div class="auth-links" style="margin-top: 20px;">
+                                <div class="auth-links auth-links-margin">
                                     <span class="lang-bg">Вече имате профил?</span>
                                     <span class="lang-en">Already have an account?</span>
                                     <a href="#" onclick="document.querySelector('[data-page=login]').click(); return false;" class="lang-bg">Вход</a>
