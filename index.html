@@ -10,6 +10,7 @@
     
     <!-- Apple touch icons за iOS -->
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Parkly">
@@ -20,6 +21,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ========== ВСИЧКИ CSS СТИЛОВЕ ========== */
         * {
             margin: 0;
             padding: 0;
@@ -59,6 +61,8 @@
             --status-badge-bg: #eef2f6;
             --status-badge-text: #2c3e50;
             --restricted-opacity: 0.4;
+            --admin-badge: #ffc107;
+            --admin-text: #000000;
         }
 
         /* Тъмна тема */
@@ -92,6 +96,8 @@
             --icon-color: #667eea;
             --status-badge-bg: #404040;
             --status-badge-text: #ffffff;
+            --admin-badge: #ffc107;
+            --admin-text: #000000;
         }
 
         body {
@@ -131,10 +137,15 @@
         .sidebar-header h2 {
             font-size: 1.5rem;
             color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .sidebar-header .logo-icon {
-            margin-right: 12px;
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
             vertical-align: middle;
             display: inline-block;
             background: transparent;
@@ -142,19 +153,13 @@
         }
 
         .sidebar-header img.logo-icon {
-            width: 80px;
-            height: 80px;
+            width: 40px;
+            height: 40px;
             object-fit: contain;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             image-rendering: optimizeQuality;
             filter: drop-shadow(0 2px 2px rgba(0,0,0,0.25));
-        }
-
-        .sidebar-header i.logo-icon {
-            font-size: 2.4rem;
-            color: var(--secondary);
-            line-height: 1;
         }
 
         .nav-menu {
@@ -305,7 +310,7 @@
             to { opacity: 1; }
         }
 
-        /* Карта - стилове от вашия код */
+        /* Карта */
         #map {
             height: 100%;
             width: 100%;
@@ -369,7 +374,7 @@
             font-size: 14px;
         }
         
-        /* Статус панел - за нелогнати потребители */
+        /* Статус панел */
         .status-panel.restricted {
             filter: blur(4px);
             opacity: var(--restricted-opacity);
@@ -734,44 +739,6 @@
             color: white;
         }
 
-        .profile-stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            padding: 30px;
-            background: var(--stat-bg);
-            transition: background-color 0.3s ease;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            transition: background-color 0.3s ease;
-            border: 1px solid var(--border-color);
-        }
-
-        .stat-card i {
-            font-size: 2rem;
-            color: var(--secondary);
-            margin-bottom: 10px;
-        }
-
-        .stat-card .stat-number {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--text-color);
-            transition: color 0.3s ease;
-        }
-
-        .stat-card .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            transition: color 0.3s ease;
-        }
-
         .profile-details {
             padding: 30px;
         }
@@ -838,7 +805,7 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
-        /* Модален прозорец за редактиране на профил */
+        /* Модален прозорец */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -1815,8 +1782,8 @@
         }
 
         .admin-badge {
-            background: var(--secondary);
-            color: white;
+            background: var(--admin-badge);
+            color: var(--admin-text);
             padding: 3px 8px;
             border-radius: 5px;
             font-size: 0.8em;
@@ -1944,8 +1911,14 @@
             }
             
             .sidebar-header .logo-icon {
-                font-size: 1rem;
+                width: 30px;
+                height: 30px;
                 margin-right: 4px;
+            }
+            
+            .sidebar-header img.logo-icon {
+                width: 30px;
+                height: 30px;
             }
             
             .nav-menu {
@@ -1983,12 +1956,12 @@
             }
             
             .nav-item span {
-                display: none;
+                display: none !important;
             }
             
             .nav-item i {
                 margin-right: 0;
-                font-size: 1.2rem;
+                font-size: 1.3rem;
                 color: var(--secondary);
             }
             
@@ -2024,7 +1997,6 @@
                 overflow-y: auto;
             }
             
-            /* Карта на мобилно */
             .map-container {
                 height: 55vh;
                 position: relative;
@@ -2098,7 +2070,6 @@
                 width: 100%;
             }
             
-            /* Профил на мобилно */
             .profile-header {
                 flex-direction: column;
                 text-align: center;
@@ -2114,12 +2085,6 @@
             
             .profile-header-info h2 {
                 font-size: 1.3rem;
-            }
-            
-            .profile-stats-grid {
-                grid-template-columns: 1fr;
-                gap: 5px;
-                padding: 10px;
             }
             
             .details-grid {
@@ -2143,7 +2108,6 @@
                 justify-content: center;
             }
             
-            /* Форми на мобилно */
             .auth-container,
             .register-container,
             .profile-container,
@@ -2230,7 +2194,6 @@
                 line-height: 1.3;
             }
             
-            /* Настройки на мобилно */
             .settings-list {
                 margin-top: 5px;
             }
@@ -2264,7 +2227,6 @@
                 padding: 8px 10px;
             }
             
-            /* Любими места на мобилно */
             .favorites-list {
                 grid-template-columns: 1fr;
                 gap: 10px;
@@ -2284,7 +2246,6 @@
                 padding: 3px 8px;
             }
             
-            /* Контакти на мобилно */
             .contact-modal {
                 width: calc(100% - 20px);
                 right: 10px;
@@ -2320,11 +2281,6 @@
                 min-height: 80px;
             }
             
-            .contact-info {
-                padding: 10px;
-                font-size: 0.85rem;
-            }
-            
             .install-banner {
                 bottom: 70px;
                 left: 5px;
@@ -2356,7 +2312,6 @@
                 font-size: 0.8rem;
             }
             
-            /* Админ панел на мобилно */
             .admin-stats {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 10px;
@@ -2405,7 +2360,6 @@
             }
         }
 
-        /* Много малки екрани (под 380px) */
         @media (max-width: 380px) {
             .sidebar-header {
                 padding: 5px 5px;
@@ -2414,6 +2368,11 @@
             
             .sidebar-header h2 {
                 font-size: 0.85rem;
+            }
+            
+            .sidebar-header .logo-icon {
+                width: 25px;
+                height: 25px;
             }
             
             .nav-menu {
@@ -2480,7 +2439,6 @@
             }
         }
 
-        /* Езикова поддръжка */
         [data-lang="bg"] .lang-en {
             display: none !important;
         }
@@ -2489,7 +2447,6 @@
             display: none !important;
         }
 
-        /* Офлайн режим индикатор */
         body.offline::after {
             content: "📴 Офлайн режим";
             position: fixed;
@@ -2515,7 +2472,8 @@
         <!-- Сайдбар с навигация -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <h2><img src="logo.svg" alt="Parkly logo" class="logo-icon"> <span class="lang-bg">Parkly</span><span class="lang-en">Parkly</span></h2>
+                 <h2><img src="logo .svg" alt="Parkly logo" class="logo-icon"> <span class="lang-bg">Parkly</span><span class="lang-en">Parkly</span></h2>
+
             </div>
             
             <div class="nav-menu">
@@ -2660,7 +2618,7 @@
                             </div>
                             
                             <!-- Показва се само за нелогнати -->
-                            <div class="login-prompt" id="loginPrompt" style="display: none;">
+                            <div class="login-prompt" id="loginPrompt">
                                 <i class="fas fa-lock"></i> 
                                 <span class="lang-bg"><a href="#" onclick="document.querySelector('[data-page=login]').click(); return false;">Влезте</a> за статус</span>
                                 <span class="lang-en"><a href="#" onclick="document.querySelector('[data-page=login]').click(); return false;">Login</a> for status</span>
@@ -2738,6 +2696,9 @@
                                 <h2 id="profile-name-en" class="lang-en"></h2>
                                 <p><i class="fas fa-envelope"></i> <span id="profile-email"></span></p>
                                 <p><i class="fas fa-phone"></i> <span id="profile-phone">-</span></p>
+                                <p id="profile-admin-badge" style="display: none; background: var(--admin-badge); color: var(--admin-text); padding: 5px 10px; border-radius: 20px; margin-top: 5px;">
+                                    <i class="fas fa-crown"></i> <span class="lang-bg">Администратор</span><span class="lang-en">Administrator</span>
+                                </p>
                             </div>
                         </div>
                         
@@ -2829,6 +2790,81 @@
                         
                         <div class="modal-actions">
                             <button class="close-btn" onclick="closeUserDetailsModal()"><span class="lang-bg">Затвори</span><span class="lang-en">Close</span></button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Админ панел -->
+                <div id="admin-page" class="page">
+                    <div class="admin-container">
+                        <h2 class="lang-bg" style="margin-bottom: 20px;">👑 Администраторско табло</h2>
+                        <h2 class="lang-en" style="margin-bottom: 20px;">👑 Admin Dashboard</h2>
+                        
+                        <div class="admin-stats">
+                            <div class="admin-stat-card">
+                                <div class="admin-stat-number" id="adminTotalUsers">0</div>
+                                <div class="admin-stat-label lang-bg">Общо потребители</div>
+                                <div class="admin-stat-label lang-en">Total Users</div>
+                            </div>
+                            <div class="admin-stat-card">
+                                <div class="admin-stat-number" id="adminVerifiedUsers">0</div>
+                                <div class="admin-stat-label lang-bg">Потвърдени</div>
+                                <div class="admin-stat-label lang-en">Verified</div>
+                            </div>
+                            <div class="admin-stat-card">
+                                <div class="admin-stat-number" id="adminGoogleUsers">0</div>
+                                <div class="admin-stat-label lang-bg">Google</div>
+                                <div class="admin-stat-label lang-en">Google</div>
+                            </div>
+                            <div class="admin-stat-card">
+                                <div class="admin-stat-number" id="adminEmailUsers">0</div>
+                                <div class="admin-stat-label lang-bg">Имейл</div>
+                                <div class="admin-stat-label lang-en">Email</div>
+                            </div>
+                            <div class="admin-stat-card">
+                                <div class="admin-stat-number" id="adminAdminUsers">0</div>
+                                <div class="admin-stat-label lang-bg">Администратори</div>
+                                <div class="admin-stat-label lang-en">Admins</div>
+                            </div>
+                        </div>
+                        
+                        <div class="users-table">
+                            <h2><i class="fas fa-users"></i> <span class="lang-bg">Управление на потребители</span><span class="lang-en">User Management</span></h2>
+                            
+                            <input type="text" class="search-box" id="adminSearchInput" placeholder="🔍 Търси по име или имейл...">
+                            
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th class="lang-bg">Име</th>
+                                        <th class="lang-bg">Фамилия</th>
+                                        <th class="lang-bg">Имейл</th>
+                                        <th class="lang-bg">Роля</th>
+                                        <th class="lang-bg">Потв.</th>
+                                        <th class="lang-bg">Провайдър</th>
+                                        <th class="lang-bg">Регистрация</th>
+                                        <th class="lang-bg">Последен вход</th>
+                                        <th class="lang-bg">Действия</th>
+                                        
+                                        <th class="lang-en">First</th>
+                                        <th class="lang-en">Last</th>
+                                        <th class="lang-en">Email</th>
+                                        <th class="lang-en">Role</th>
+                                        <th class="lang-en">Verif.</th>
+                                        <th class="lang-en">Provider</th>
+                                        <th class="lang-en">Reg.</th>
+                                        <th class="lang-en">Last Login</th>
+                                        <th class="lang-en">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminUsersTableBody">
+                                    <tr>
+                                        <td colspan="9" style="text-align: center;">Зареждане...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <div class="pagination" id="adminPagination"></div>
                         </div>
                     </div>
                 </div>
@@ -2977,81 +3013,6 @@
                     </div>
                 </div>
                 
-                <!-- Админ панел -->
-                <div id="admin-page" class="page">
-                    <div class="admin-container">
-                        <h2 class="lang-bg" style="margin-bottom: 20px;">👑 Администраторско табло</h2>
-                        <h2 class="lang-en" style="margin-bottom: 20px;">👑 Admin Dashboard</h2>
-                        
-                        <div class="admin-stats">
-                            <div class="admin-stat-card">
-                                <div class="admin-stat-number" id="adminTotalUsers">0</div>
-                                <div class="admin-stat-label lang-bg">Общо</div>
-                                <div class="admin-stat-label lang-en">Total</div>
-                            </div>
-                            <div class="admin-stat-card">
-                                <div class="admin-stat-number" id="adminVerifiedUsers">0</div>
-                                <div class="admin-stat-label lang-bg">Потвърдени</div>
-                                <div class="admin-stat-label lang-en">Verified</div>
-                            </div>
-                            <div class="admin-stat-card">
-                                <div class="admin-stat-number" id="adminGoogleUsers">0</div>
-                                <div class="admin-stat-label lang-bg">Google</div>
-                                <div class="admin-stat-label lang-en">Google</div>
-                            </div>
-                            <div class="admin-stat-card">
-                                <div class="admin-stat-number" id="adminEmailUsers">0</div>
-                                <div class="admin-stat-label lang-bg">Имейл</div>
-                                <div class="admin-stat-label lang-en">Email</div>
-                            </div>
-                            <div class="admin-stat-card">
-                                <div class="admin-stat-number" id="adminAdminUsers">0</div>
-                                <div class="admin-stat-label lang-bg">Админи</div>
-                                <div class="admin-stat-label lang-en">Admins</div>
-                            </div>
-                        </div>
-                        
-                        <div class="users-table">
-                            <h2><i class="fas fa-users"></i> <span class="lang-bg">Управление</span><span class="lang-en">Management</span></h2>
-                            
-                            <input type="text" class="search-box" id="adminSearchInput" placeholder="🔍 Търси...">
-                            
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th class="lang-bg">Име</th>
-                                        <th class="lang-bg">Фамилия</th>
-                                        <th class="lang-bg">Имейл</th>
-                                        <th class="lang-bg">Роля</th>
-                                        <th class="lang-bg">Потв.</th>
-                                        <th class="lang-bg">Провайдър</th>
-                                        <th class="lang-bg">Рег.</th>
-                                        <th class="lang-bg">Посл. вход</th>
-                                        <th class="lang-bg">Действия</th>
-                                        
-                                        <th class="lang-en">First</th>
-                                        <th class="lang-en">Last</th>
-                                        <th class="lang-en">Email</th>
-                                        <th class="lang-en">Role</th>
-                                        <th class="lang-en">Verif.</th>
-                                        <th class="lang-en">Provider</th>
-                                        <th class="lang-en">Reg.</th>
-                                        <th class="lang-en">Last login</th>
-                                        <th class="lang-en">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="adminUsersTableBody">
-                                    <tr>
-                                        <td colspan="9" style="text-align: center;">Зареждане...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            
-                            <div class="pagination" id="adminPagination"></div>
-                        </div>
-                    </div>
-                </div>
-                
                 <!-- Настройки -->
                 <div id="settings-page" class="page">
                     <h2 class="form-title lang-bg">Настройки</h2>
@@ -3139,20 +3100,29 @@
     
     <script>
         // ===== Firebase конфигурация =====
+        // Конфигурация за Authentication и Firestore (от registration-88c86)
         const firebaseConfig = {
             apiKey: "AIzaSyCtTNJsKJWnOVpRazP5Txz37ll_odEkEo8",
             authDomain: "registration-88c86.firebaseapp.com",
             projectId: "registration-88c86",
             storageBucket: "registration-88c86.firebasestorage.app",
             messagingSenderId: "344139226116",
-            appId: "1:344139226116:web:4d1559eab47beab89a2951",
+            appId: "1:344139226116:web:4d1559eab47beab89a2951"
+        };
+        
+        // Конфигурация за Realtime Database със сензорите (от ESP32)
+        const databaseConfig = {
             databaseURL: "https://esp32-5d620-default-rtdb.firebaseio.com/"
         };
         
-        firebase.initializeApp(firebaseConfig);
+        // Инициализиране на Firebase за Authentication и Firestore
+        const app = firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-        const rtdb = firebase.database();
+        
+        // Инициализиране на второ приложение за Realtime Database
+        const secondaryApp = firebase.initializeApp(databaseConfig, "secondary");
+        const rtdb = secondaryApp.database();
         
         // ===== Глобални променливи =====
         let currentUser = null;
@@ -3162,6 +3132,8 @@
         let spot1Distance = -1;
         let spot2Distance = -1;
         let lastUpdateTime = null;
+        let map = null;
+        let parkingPolygons = [];
         let allUsers = [];
         let filteredUsers = [];
         let currentAdminPage = 1;
@@ -3229,7 +3201,7 @@
             }
         }
 
-        // ===== ФУНКЦИИ ЗА АКТУАЛИЗИРАНЕ НА UI =====
+        // ===== ФУНКЦИИ ЗА АКТУАЛИЗИРАНЕ НА UI СПОРЕД ПОТРЕБИТЕЛЯ =====
         function updateUIBasedOnAuth(user) {
             const loginNavItem = document.getElementById('login-nav-item');
             const registerNavItem = document.getElementById('register-nav-item');
@@ -3237,10 +3209,13 @@
             const adminNavItem = document.getElementById('admin-nav-item');
             const userName = document.getElementById('userName');
             const userNameEn = document.getElementById('userNameEn');
+            const userStatus = document.getElementById('userStatus');
+            const userStatusEn = document.getElementById('userStatusEn');
             const statusPanel = document.getElementById('statusPanel');
             const loginPrompt = document.getElementById('loginPrompt');
             
             if (user) {
+                // Потребителят е логнат
                 currentUser = user;
                 
                 loginNavItem.style.display = 'none';
@@ -3251,17 +3226,35 @@
                 userName.textContent = displayName;
                 userNameEn.textContent = displayName;
                 
+                // Премахваме restricted класа от статус панела
                 statusPanel.classList.remove('restricted');
                 loginPrompt.style.display = 'none';
                 
+                // Зареждаме потребителските данни от Firestore
                 loadUserProfile(user.uid);
                 
+                // Проверяваме дали е админ
                 isUserAdmin(user.uid).then(admin => {
                     isAdmin = admin;
                     adminNavItem.style.display = admin ? 'flex' : 'none';
-                    if (admin) loadAllUsers();
+                    
+                    // Актуализираме статуса в UI
+                    userStatus.textContent = admin ? 'Администратор' : 'Потребител';
+                    userStatusEn.textContent = admin ? 'Administrator' : 'User';
+                    
+                    if (admin) {
+                        loadAllUsers();
+                    }
                 });
+                
+                // Актуализираме статусите
+                updateSpotStatus(1, spot1Status, spot1Distance);
+                updateSpotStatus(2, spot2Status, spot2Distance);
+                if (map && parkingPolygons.length > 0) {
+                    updateMapColors();
+                }
             } else {
+                // Потребителят не е логнат
                 currentUser = null;
                 isAdmin = false;
                 
@@ -3272,11 +3265,23 @@
                 
                 userName.textContent = 'Гост';
                 userNameEn.textContent = 'Guest';
+                userStatus.textContent = '';
+                userStatusEn.textContent = '';
                 
+                // Добавяме restricted клас към статус панела
                 statusPanel.classList.add('restricted');
                 loginPrompt.style.display = 'block';
                 
+                // Изчистваме профил страницата
                 clearProfilePage();
+                
+                // Показваме "ЗАРЕЖДАНЕ" за нелогнати
+                updateSpotStatus(1, "ЗАРЕЖДАНЕ", -1);
+                updateSpotStatus(2, "ЗАРЕЖДАНЕ", -1);
+                
+                // Нулираме админ данните
+                allUsers = [];
+                filteredUsers = [];
             }
         }
 
@@ -3291,6 +3296,7 @@
             document.getElementById('profile-role').textContent = 'Потребител';
             document.getElementById('profile-created').textContent = '';
             document.getElementById('profile-lastlogin').textContent = '';
+            document.getElementById('profile-admin-badge').style.display = 'none';
         }
 
         async function loadUserProfile(userId) {
@@ -3312,6 +3318,12 @@
                     const role = (userData.isAdmin || userData.role === 'admin') ? 'Администратор' : 'Потребител';
                     document.getElementById('profile-role').textContent = role;
                     
+                    if (userData.isAdmin || userData.role === 'admin') {
+                        document.getElementById('profile-admin-badge').style.display = 'inline-block';
+                    } else {
+                        document.getElementById('profile-admin-badge').style.display = 'none';
+                    }
+                    
                     if (userData.createdAt) {
                         const date = new Date(userData.createdAt.seconds * 1000);
                         document.getElementById('profile-created').textContent = date.toLocaleDateString('bg-BG');
@@ -3327,7 +3339,7 @@
             }
         }
 
-        // ===== РЕДАКТИРАНЕ НА ПРОФИЛ =====
+        // ===== ФУНКЦИИ ЗА РЕДАКТИРАНЕ НА ПРОФИЛ =====
         window.editProfile = function() {
             if (!currentUser) return;
             
@@ -3372,6 +3384,11 @@
                 alert('Профилът е обновен успешно!');
                 closeEditModal();
                 loadUserProfile(currentUser.uid);
+                
+                // Актуализираме името в страничната лента
+                document.getElementById('userName').textContent = `${firstName} ${lastName}`;
+                document.getElementById('userNameEn').textContent = `${firstName} ${lastName}`;
+                
             } catch (error) {
                 alert('Грешка: ' + error.message);
             }
@@ -3390,7 +3407,7 @@
             } catch (error) {
                 console.error('Грешка при зареждане на потребители:', error);
                 document.getElementById('adminUsersTableBody').innerHTML = `
-                    <tr><td colspan="9" style="text-align: center; color: var(--accent);">❌ Грешка</td></tr>
+                    <tr><td colspan="9" style="text-align: center; color: var(--accent);">❌ Грешка при зареждане</td></tr>
                 `;
             }
         }
@@ -3405,23 +3422,27 @@
 
         function setupAdminSearch() {
             const searchInput = document.getElementById('adminSearchInput');
-            searchInput.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                
-                filteredUsers = allUsers.filter(user => 
-                    (user.firstName && user.firstName.toLowerCase().includes(searchTerm)) ||
-                    (user.lastName && user.lastName.toLowerCase().includes(searchTerm)) ||
-                    (user.fullName && user.fullName.toLowerCase().includes(searchTerm)) ||
-                    (user.email && user.email.toLowerCase().includes(searchTerm))
-                );
-                
-                currentAdminPage = 1;
-                displayAdminUsers();
-            });
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    
+                    filteredUsers = allUsers.filter(user => 
+                        (user.firstName && user.firstName.toLowerCase().includes(searchTerm)) ||
+                        (user.lastName && user.lastName.toLowerCase().includes(searchTerm)) ||
+                        (user.fullName && user.fullName.toLowerCase().includes(searchTerm)) ||
+                        (user.email && user.email.toLowerCase().includes(searchTerm))
+                    );
+                    
+                    currentAdminPage = 1;
+                    displayAdminUsers();
+                });
+            }
         }
 
         function displayAdminUsers() {
             const tbody = document.getElementById('adminUsersTableBody');
+            
+            if (!tbody) return;
             
             if (filteredUsers.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">Няма потребители</td></tr>';
@@ -3432,9 +3453,11 @@
             const startIndex = (currentAdminPage - 1) * usersPerPage;
             const endIndex = startIndex + usersPerPage;
             const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+            
+            const currentLang = document.body.getAttribute('data-lang') || 'bg';
 
             tbody.innerHTML = paginatedUsers.map(user => {
-                const isAdmin = user.isAdmin || user.role === 'admin';
+                const isAdminUser = user.isAdmin || user.role === 'admin';
                 const createdAt = user.createdAt ? new Date(user.createdAt.seconds * 1000).toLocaleDateString('bg-BG') : '-';
                 const lastLogin = user.lastLogin ? new Date(user.lastLogin.seconds * 1000).toLocaleDateString('bg-BG') : '-';
                 
@@ -3443,18 +3466,18 @@
                     <td>${user.firstName || '-'}</td>
                     <td>${user.lastName || '-'}</td>
                     <td>${user.email}</td>
-                    <td>${isAdmin ? '<span class="admin-badge">Админ</span>' : '<span class="user-badge">Потребител</span>'}</td>
+                    <td>${isAdminUser ? '<span class="admin-badge">' + (currentLang === 'bg' ? 'Админ' : 'Admin') + '</span>' : '<span class="user-badge">' + (currentLang === 'bg' ? 'Потребител' : 'User') + '</span>'}</td>
                     <td>${user.emailVerified ? '✅' : '❌'}</td>
-                    <td>${user.provider === 'google' ? 'Google' : 'Имейл'}</td>
+                    <td>${user.provider === 'google' ? 'Google' : (currentLang === 'bg' ? 'Имейл' : 'Email')}</td>
                     <td>${createdAt}</td>
                     <td>${lastLogin}</td>
                     <td>
-                        ${!isAdmin 
-                            ? `<button class="btn-small btn-success" onclick="makeAdmin('${user.id}')">Админ</button>`
-                            : `<button class="btn-small btn-warning" onclick="removeAdmin('${user.id}')">Премахни</button>`
+                        ${!isAdminUser 
+                            ? `<button class="btn-small btn-success" onclick="makeAdmin('${user.id}')">${currentLang === 'bg' ? 'Направи админ' : 'Make admin'}</button>`
+                            : `<button class="btn-small btn-warning" onclick="removeAdmin('${user.id}')">${currentLang === 'bg' ? 'Премахни' : 'Remove'}</button>`
                         }
-                        <button class="btn-small btn-info" onclick="viewUserDetails('${user.id}')">Детайли</button>
-                        <button class="btn-small btn-danger" onclick="deleteUser('${user.id}')">Изтрий</button>
+                        <button class="btn-small btn-info" onclick="viewUserDetails('${user.id}')">${currentLang === 'bg' ? 'Детайли' : 'Details'}</button>
+                        <button class="btn-small btn-danger" onclick="deleteUser('${user.id}')">${currentLang === 'bg' ? 'Изтрий' : 'Delete'}</button>
                     </td>
                 </tr>
             `}).join('');
@@ -3465,6 +3488,8 @@
         function updateAdminPagination() {
             const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
             const pagination = document.getElementById('adminPagination');
+            
+            if (!pagination) return;
             
             if (totalPages <= 1) {
                 pagination.innerHTML = '';
@@ -3484,10 +3509,11 @@
         };
 
         window.makeAdmin = async function(userId) {
-            if (!confirm('Направи администратор?')) return;
+            const currentLang = document.body.getAttribute('data-lang') || 'bg';
+            if (!confirm(currentLang === 'bg' ? 'Направи този потребител администратор?' : 'Make this user an admin?')) return;
             try {
                 await db.collection('users').doc(userId).update({ isAdmin: true, role: 'admin' });
-                alert('✅ Успешно!');
+                alert(currentLang === 'bg' ? '✅ Потребителят вече е администратор!' : '✅ User is now admin!');
                 loadAllUsers();
             } catch (error) {
                 alert('❌ Грешка: ' + error.message);
@@ -3495,17 +3521,17 @@
         };
 
         window.removeAdmin = async function(userId) {
-            if (!confirm('Премахни администраторски права?')) return;
+            const currentLang = document.body.getAttribute('data-lang') || 'bg';
+            if (!confirm(currentLang === 'bg' ? 'Премахни администраторските права?' : 'Remove admin rights?')) return;
             try {
                 await db.collection('users').doc(userId).update({ isAdmin: false, role: 'user' });
-                alert('✅ Успешно!');
+                alert(currentLang === 'bg' ? '✅ Администраторските права са премахнати!' : '✅ Admin rights removed!');
                 loadAllUsers();
             } catch (error) {
                 alert('❌ Грешка: ' + error.message);
             }
         };
 
-        // ===== ФУНКЦИИ ЗА ДЕТАЙЛИ НА ПОТРЕБИТЕЛ (МОДАЛЕН ПРОЗОРЕЦ) =====
         window.viewUserDetails = function(userId) {
             const user = allUsers.find(u => u.id === userId);
             if (!user) return;
@@ -3533,7 +3559,7 @@
                 </div>
                 <div class="user-detail-item">
                     <div class="user-detail-label">${lang === 'bg' ? 'Провайдър' : 'Provider'}</div>
-                    <div class="user-detail-value"><i class="fab fa-${user.provider === 'google' ? 'google' : 'envelope'}"></i> ${user.provider === 'google' ? 'Google' : 'Email/Password'}</div>
+                    <div class="user-detail-value"><i class="fab fa-${user.provider === 'google' ? 'google' : 'envelope'}"></i> ${user.provider === 'google' ? 'Google' : (lang === 'bg' ? 'Имейл/Парола' : 'Email/Password')}</div>
                 </div>
                 <div class="user-detail-item">
                     <div class="user-detail-label">${lang === 'bg' ? 'Имейл потвърден' : 'Email verified'}</div>
@@ -3558,10 +3584,12 @@
         };
 
         window.deleteUser = async function(userId) {
-            if (!confirm('🚨 ИЗТРИВАНЕ! Сигурни ли сте?')) return;
+            const currentLang = document.body.getAttribute('data-lang') || 'bg';
+            if (!confirm(currentLang === 'bg' ? '🚨 ВНИМАНИЕ! Сигурни ли сте, че искате да изтриете този потребител? Това действие е необратимо!' : '🚨 WARNING! Are you sure you want to delete this user? This action is irreversible!')) return;
+            
             try {
                 await db.collection('users').doc(userId).delete();
-                alert('✅ Потребителят е изтрит!');
+                alert(currentLang === 'bg' ? '✅ Потребителят е изтрит!' : '✅ User deleted!');
                 loadAllUsers();
                 closeUserDetailsModal();
             } catch (error) {
@@ -3569,200 +3597,88 @@
             }
         };
 
-        // ===== ФУНКЦИИ ЗА АУТЕНТИКАЦИЯ =====
-        async function registerUser(email, password, firstName, lastName, phone) {
-            if (!email || !password || !firstName || !lastName) {
-                showError('register-error', '❌ Попълнете всички полета');
-                return;
-            }
-            
-            if (password.length < 6) {
-                showError('register-error', '❌ Паролата трябва да е поне 6 символа');
-                return;
-            }
-            
-            if (password !== document.getElementById('register-confirm').value) {
-                showError('register-error', '❌ Паролите не съвпадат');
-                return;
-            }
-            
-            const registerBtn = document.querySelector('#register-form button[type="submit"]');
-            const originalText = registerBtn.innerHTML;
-            registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>...';
-            registerBtn.disabled = true;
-            
-            try {
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-                
-                await user.updateProfile({ displayName: `${firstName} ${lastName}` });
-                
-                await db.collection('users').doc(user.uid).set({
-                    firstName, lastName,
-                    fullName: `${firstName} ${lastName}`,
-                    email, phone: phone || '',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
-                    emailVerified: false,
-                    provider: 'email',
-                    isAdmin: false,
-                    role: 'user'
-                });
-                
-                await user.sendEmailVerification();
-                
-                showSuccess('register-success', '✅ Успешна регистрация! Проверете имейла си.');
-                document.getElementById('register-form').reset();
-                setTimeout(() => document.querySelector('[data-page=login]').click(), 3000);
-                
-            } catch (error) {
-                let msg = '❌ Грешка: ';
-                if (error.code === 'auth/email-already-in-use') msg = '❌ Имейлът вече е регистриран';
-                else if (error.code === 'auth/weak-password') msg = '❌ Паролата е твърде кратка';
-                else msg += error.message;
-                showError('register-error', msg);
-            } finally {
-                registerBtn.innerHTML = originalText;
-                registerBtn.disabled = false;
-            }
-        }
-
-        async function loginUser(email, password) {
-            if (!email || !password) {
-                showError('login-error', '❌ Попълнете имейл и парола');
-                return;
-            }
-            
-            const loginBtn = document.querySelector('#login-form button[type="submit"]');
-            const originalText = loginBtn.innerHTML;
-            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>...';
-            loginBtn.disabled = true;
-            
-            try {
-                const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-                
-                if (!user.emailVerified) {
-                    await auth.signOut();
-                    showError('login-error', '❌ Имейлът не е потвърден. Моля, проверете пощата си.');
-                    loginBtn.innerHTML = originalText;
-                    loginBtn.disabled = false;
-                    return;
-                }
-                
-                await db.collection('users').doc(user.uid).update({
-                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                showSuccess('login-success', '✅ Успешен вход!');
-                setTimeout(() => document.querySelector('[data-page=map]').click(), 1500);
-                
-            } catch (error) {
-                let msg = '❌ Грешка: ';
-                if (error.code === 'auth/user-not-found') msg = '❌ Няма такъв потребител';
-                else if (error.code === 'auth/wrong-password') msg = '❌ Грешна парола';
-                else msg += error.message;
-                showError('login-error', msg);
-                loginBtn.innerHTML = originalText;
-                loginBtn.disabled = false;
-            }
-        }
-
-        async function logoutUser() {
-            await auth.signOut();
-            document.querySelector('[data-page=map]').click();
-        }
-
-        async function signInWithGoogle(mode) {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            
-            try {
-                const result = await auth.signInWithPopup(provider);
-                const user = result.user;
-                
-                const userDoc = await db.collection('users').doc(user.uid).get();
-                
-                if (!userDoc.exists) {
-                    let firstName = '', lastName = '';
-                    if (user.displayName) {
-                        const nameParts = user.displayName.split(' ');
-                        firstName = nameParts[0] || '';
-                        lastName = nameParts.slice(1).join(' ') || '';
-                    }
-                    
-                    await db.collection('users').doc(user.uid).set({
-                        firstName, lastName,
-                        fullName: user.displayName || '',
-                        email: user.email,
-                        photoURL: user.photoURL || '',
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
-                        emailVerified: user.emailVerified,
-                        provider: 'google',
-                        isAdmin: false,
-                        role: 'user'
-                    });
-                } else {
-                    await db.collection('users').doc(user.uid).update({
-                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
-                
-                setTimeout(() => document.querySelector('[data-page=map]').click(), 1500);
-                
-            } catch (error) {
-                let msg = '❌ Грешка: ';
-                if (error.code === 'auth/popup-closed-by-user') msg = '❌ Прозорецът беше затворен';
-                else msg += error.message;
-                showError(mode === 'login' ? 'login-error' : 'register-error', msg);
-            }
-        }
-
-        // ===== ФУНКЦИИ ЗА RTDB =====
+        // ===== ФУНКЦИИ ЗА RTDB (ПАРКОМЕСТА) =====
         function setupFirebaseListeners() {
+            // Слушател за място 1 (инвалиди)
             rtdb.ref('parking/spot1').on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
                     spot1Distance = data.distance || -1;
                     spot1Status = data.status || "ГРЕШКА";
-                    if (currentUser) updateSpotStatus(1, spot1Status, spot1Distance);
-                    if (map && parkingPolygons.length > 0 && currentUser) updateMapColors();
+                    
+                    console.log("Място 1 обновено:", spot1Status, spot1Distance);
+                    
+                    // Актуализираме UI само ако има логнат потребител
+                    if (currentUser) {
+                        updateSpotStatus(1, spot1Status, spot1Distance);
+                    }
+                    if (map && parkingPolygons.length > 0 && currentUser) {
+                        updateMapColors();
+                    }
                     updateLastUpdateTime();
                     updateFreeSpotsCount();
                 }
             });
             
+            // Слушател за място 2
             rtdb.ref('parking/spot2').on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
                     spot2Distance = data.distance || -1;
                     spot2Status = data.status || "ГРЕШКА";
-                    if (currentUser) updateSpotStatus(2, spot2Status, spot2Distance);
-                    if (map && parkingPolygons.length > 0 && currentUser) updateMapColors();
+                    
+                    console.log("Място 2 обновено:", spot2Status, spot2Distance);
+                    
+                    // Актуализираме UI само ако има логнат потребител
+                    if (currentUser) {
+                        updateSpotStatus(2, spot2Status, spot2Distance);
+                    }
+                    if (map && parkingPolygons.length > 0 && currentUser) {
+                        updateMapColors();
+                    }
                     updateLastUpdateTime();
                     updateFreeSpotsCount();
                 }
             });
+            
+            console.log("Firebase слушатели са активирани");
         }
 
         function updateSpotStatus(spotNumber, status, distance) {
             const statusElement = document.getElementById('status' + spotNumber);
             if (!statusElement) return;
             
-            let statusClass = '', icon = '';
+            let statusClass = '';
+            let icon = '';
             
             if (spotNumber === 1) {
-                if (status === "ЗАЕТО") { statusClass = "status-disabled-occupied"; icon = '<i class="fas fa-times-circle"></i>'; }
-                else if (status === "ПРАЗНО") { statusClass = "status-disabled-empty"; icon = '<i class="fas fa-check-circle"></i>'; }
-                else { statusClass = "status-pending"; icon = '<i class="fas fa-spinner fa-spin"></i>'; }
+                if (status === "ЗАЕТО") {
+                    statusClass = "status-disabled-occupied";
+                    icon = '<i class="fas fa-times-circle"></i>';
+                } else if (status === "ПРАЗНО") {
+                    statusClass = "status-disabled-empty";
+                    icon = '<i class="fas fa-check-circle"></i>';
+                } else {
+                    statusClass = "status-pending";
+                    icon = '<i class="fas fa-spinner fa-spin"></i>';
+                }
             } else {
-                if (status === "ЗАЕТО") { statusClass = "status-occupied"; icon = '<i class="fas fa-times-circle"></i>'; }
-                else if (status === "ПРАЗНО") { statusClass = "status-empty"; icon = '<i class="fas fa-check-circle"></i>'; }
-                else { statusClass = "status-pending"; icon = '<i class="fas fa-spinner fa-spin"></i>'; }
+                if (status === "ЗАЕТО") {
+                    statusClass = "status-occupied";
+                    icon = '<i class="fas fa-times-circle"></i>';
+                } else if (status === "ПРАЗНО") {
+                    statusClass = "status-empty";
+                    icon = '<i class="fas fa-check-circle"></i>';
+                } else {
+                    statusClass = "status-pending";
+                    icon = '<i class="fas fa-spinner fa-spin"></i>';
+                }
             }
             
+            const currentLang = document.body.getAttribute('data-lang') || 'bg';
             let statusText = status;
-            if (document.body.getAttribute('data-lang') === 'en') {
+            
+            if (currentLang === 'en') {
                 if (status === "ЗАЕТО") statusText = "OCCUPIED";
                 else if (status === "ПРАЗНО") statusText = "FREE";
                 else if (status === "ЗАРЕЖДАНЕ") statusText = "LOADING";
@@ -3773,39 +3689,48 @@
             statusElement.className = 'status-value ' + statusClass;
             
             if (distance > 0) {
-                statusElement.title = (document.body.getAttribute('data-lang') === 'bg' ? 'Разстояние: ' : 'Distance: ') + distance + ' cm';
+                statusElement.title = (currentLang === 'bg' ? 'Разстояние: ' : 'Distance: ') + distance + ' cm';
             }
         }
 
         function updateMapColors() {
             if (!map || parkingPolygons.length === 0 || !currentUser) return;
             
-            const colors = {
-                disabledEmpty: '#0066cc', disabledOccupied: '#b71c1c',
-                regularEmpty: '#34a853', regularOccupied: '#ea4335'
-            };
-            
             for (let i = 0; i < parkingPolygons.length; i++) {
                 let fillColor;
-                if (i === 0) fillColor = spot1Status === "ЗАЕТО" ? colors.disabledOccupied : colors.disabledEmpty;
-                else if (i === 1) fillColor = spot2Status === "ЗАЕТО" ? colors.regularOccupied : colors.regularEmpty;
-                else fillColor = colors.regularEmpty;
                 
-                parkingPolygons[i].setStyle({ fillColor });
+                if (i === 0) {
+                    fillColor = spot1Status === "ЗАЕТО" ? '#b71c1c' : '#0066cc';
+                } else if (i === 1) {
+                    fillColor = spot2Status === "ЗАЕТО" ? '#ea4335' : '#34a853';
+                } else {
+                    fillColor = '#34a853';
+                }
+                
+                parkingPolygons[i].setStyle({ fillColor: fillColor });
             }
         }
 
         function updateFreeSpotsCount() {
-            let free = 1;
+            let free = 1; // Място 3 винаги свободно
+            
             if (spot1Status === "ПРАЗНО") free++;
             if (spot2Status === "ПРАЗНО") free++;
+            
             const freeSpotsElement = document.getElementById('freeSpots');
-            if (freeSpotsElement) freeSpotsElement.textContent = free;
+            if (freeSpotsElement) {
+                freeSpotsElement.textContent = free;
+            }
         }
 
         function updateLastUpdateTime() {
             lastUpdateTime = new Date();
-            const timeString = lastUpdateTime.toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const timeString = lastUpdateTime.toLocaleTimeString('bg-BG', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
             const lastUpdateElement = document.getElementById('lastUpdate');
             if (lastUpdateElement) {
                 lastUpdateElement.innerHTML = '<i class="far fa-clock"></i> ' + timeString;
@@ -3814,8 +3739,11 @@
 
         window.manualRefresh = function() {
             const refreshBtn = document.querySelector('.controls button i');
-            if (refreshBtn) refreshBtn.className = 'fas fa-spinner fa-spin';
+            if (refreshBtn) {
+                refreshBtn.className = 'fas fa-spinner fa-spin';
+            }
             
+            // Ръчно актуализиране на данните
             rtdb.ref('parking').once('value').then((snapshot) => {
                 const data = snapshot.val();
                 if (data) {
@@ -3829,63 +3757,89 @@
                         spot2Status = data.spot2.status || "ГРЕШКА";
                         if (currentUser) updateSpotStatus(2, spot2Status, spot2Distance);
                     }
-                    if (map && parkingPolygons.length > 0 && currentUser) updateMapColors();
+                    if (map && parkingPolygons.length > 0 && currentUser) {
+                        updateMapColors();
+                    }
                     updateLastUpdateTime();
                     updateFreeSpotsCount();
                 }
-                if (refreshBtn) refreshBtn.className = 'fas fa-sync-alt';
-            }).catch(() => {
+                if (refreshBtn) {
+                    refreshBtn.className = 'fas fa-sync-alt';
+                }
+            }).catch((error) => {
+                console.error("Грешка при ръчно актуализиране:", error);
                 if (refreshBtn) {
                     refreshBtn.className = 'fas fa-exclamation-triangle';
-                    setTimeout(() => refreshBtn.className = 'fas fa-sync-alt', 2000);
+                    setTimeout(() => {
+                        refreshBtn.className = 'fas fa-sync-alt';
+                    }, 2000);
                 }
             });
         };
 
         // ===== ФУНКЦИИ ЗА КАРТАТА =====
-        let map = null;
-        let parkingPolygons = [];
+        const centerLat = 42.8768;
+        const centerLng = 25.3179;
+        const parkingWidth = 3.0;
+        const parkingLength = 6.0;
+        const spaceBetween = 0.5;
+        
+        function metersToDegrees(meters) {
+            return meters / 111111;
+        }
 
         function initializeMap() {
-            if (map !== null) return;
+            // Проверка дали картата вече е инициализирана
+            if (map !== null) {
+                console.log("Картата вече е инициализирана");
+                return;
+            }
+            
+            // Проверка дали елементът съществува
+            const mapElement = document.getElementById('map');
+            if (!mapElement) {
+                console.error("Елементът за карта не е намерен");
+                setTimeout(initializeMap, 500);
+                return;
+            }
             
             try {
-                const centerLat = 42.8768;
-                const centerLng = 25.3179;
+                console.log("Инициализиране на карта...");
                 
+                // Създаване на картата
                 map = L.map('map').setView([centerLat, centerLng], 18.5);
                 
+                // Добавяне на стандартен OpenStreetMap слой
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; OpenStreetMap',
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                     maxZoom: 22
                 }).addTo(map);
                 
+                // Създаване на паркоместата
                 createParkingSpots();
+                
+                // Добавяне на събитие за преоразмеряване
+                setTimeout(() => {
+                    map.invalidateSize();
+                }, 500);
+                
+                console.log("Картата е инициализирана успешно");
             } catch (error) {
                 console.error("Грешка при инициализиране на картата:", error);
+                // Опитай пак след 1 секунда
                 setTimeout(initializeMap, 1000);
             }
         }
 
         function createParkingSpots() {
-            if (!map) return;
-            
-            parkingPolygons = [];
-            
-            const centerLat = 42.8768;
-            const centerLng = 25.3179;
-            const parkingWidth = 3.0;
-            const parkingLength = 6.0;
-            const spaceBetween = 0.5;
-            
-            function metersToDegrees(meters) {
-                return meters / 111111;
+            if (!map) {
+                console.error("Картата не е инициализирана");
+                return;
             }
             
-            const colors = {
-                disabledEmpty: '#0066cc', disabledOccupied: '#b71c1c',
-                regularEmpty: '#34a853', regularOccupied: '#ea4335'
-            };
+            console.log("Създаване на паркоместа...");
+            
+            parkingPolygons = [];
             
             for (let i = 0; i < 3; i++) {
                 const offsetLng = metersToDegrees(i * (parkingWidth + spaceBetween));
@@ -3898,6 +3852,7 @@
                 const halfWidth = metersToDegrees(parkingWidth) / 2;
                 const halfLength = metersToDegrees(parkingLength) / 2;
                 
+                // Ъглите на правоъгълника
                 const corners = [
                     [spotLat - halfLength, spotLng - halfWidth],
                     [spotLat - halfLength, spotLng + halfWidth],
@@ -3905,11 +3860,17 @@
                     [spotLat + halfLength, spotLng - halfWidth]
                 ];
                 
+                // Определяне на цвета според статуса и типа място
                 let fillColor;
-                if (i === 0) fillColor = (currentUser && spot1Status === "ЗАЕТО") ? colors.disabledOccupied : colors.disabledEmpty;
-                else if (i === 1) fillColor = (currentUser && spot2Status === "ЗАЕТО") ? colors.regularOccupied : colors.regularEmpty;
-                else fillColor = colors.regularEmpty;
+                if (i === 0) {
+                    fillColor = (currentUser && spot1Status === "ЗАЕТО") ? '#b71c1c' : '#0066cc';
+                } else if (i === 1) {
+                    fillColor = (currentUser && spot2Status === "ЗАЕТО") ? '#ea4335' : '#34a853';
+                } else {
+                    fillColor = '#34a853';
+                }
                 
+                // Създаване на паркомястото
                 const parkingSpace = L.polygon(corners, {
                     color: '#ffffff',
                     fillColor: fillColor,
@@ -3919,11 +3880,12 @@
                 
                 parkingPolygons.push(parkingSpace);
                 
+                // Добавяне на номер с икона
                 let labelHtml;
                 if (i === 0) {
-                    labelHtml = '<div style="background: white; color: ' + fillColor + '; font-weight: 700; font-size: 16px; width: 44px; height: 44px; border-radius: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 3px solid ' + fillColor + '; box-shadow: 0 4px 12px rgba(0,0,0,0.2);"><span style="font-size: 12px;">' + (i + 1) + '</span><i class="fas fa-wheelchair" style="font-size: 18px;"></i></div>';
+                    labelHtml = '<div style="background: white; color: ' + fillColor + '; font-weight: 700; font-size: 16px; width: 44px; height: 44px; border-radius: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 3px solid ' + fillColor + '; box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-family: \'Segoe UI\', sans-serif; line-height: 1.2; background: rgba(255,255,255,0.98);"><span style="font-size: 12px;">' + (i + 1) + '</span><i class="fas fa-wheelchair" style="font-size: 18px;"></i></div>';
                 } else {
-                    labelHtml = '<div style="background: white; color: ' + fillColor + '; font-weight: 700; font-size: 18px; width: 38px; height: 38px; border-radius: 30px; display: flex; align-items: center; justify-content: center; border: 3px solid ' + fillColor + '; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">' + (i + 1) + '</div>';
+                    labelHtml = '<div style="background: white; color: ' + fillColor + '; font-weight: 700; font-size: 18px; width: 38px; height: 38px; border-radius: 30px; display: flex; align-items: center; justify-content: center; border: 3px solid ' + fillColor + '; box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-family: \'Segoe UI\', sans-serif; background: rgba(255,255,255,0.98);">' + (i + 1) + '</div>';
                 }
                 
                 L.marker([spotLat, spotLng], {
@@ -3935,6 +3897,7 @@
                     })
                 }).addTo(map);
                 
+                // Информация при клик
                 let statusText = spot1Status;
                 if (i === 1) statusText = spot2Status;
                 else if (i === 2) statusText = "СВОБОДНО";
@@ -3955,25 +3918,267 @@
                 }
                 
                 if (!currentUser) {
-                    popupContent += '<div style="margin-top: 8px; padding: 8px; background: #fff3cd; border-radius: 8px; color: #856404;"><i class="fas fa-lock"></i> Влезте за статус</div>';
+                    popupContent += '<div style="margin-top: 8px; padding: 8px; background: #fff3cd; border-radius: 8px; color: #856404;"><i class="fas fa-lock"></i> Влезте, за да видите статуса</div>';
                 }
                 
                 popupContent += '</div></div>';
                 
                 parkingSpace.bindPopup(popupContent);
             }
+            
+            console.log("Паркоместата са създадени успешно");
         }
+
+        // ===== ФУНКЦИИ ЗА АУТЕНТИКАЦИЯ =====
+        async function registerUser(email, password, firstName, lastName, phone) {
+            if (!email || !password || !firstName || !lastName) {
+                showError('register-error', '❌ Моля, попълнете всички задължителни полета');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showError('register-error', '❌ Паролата трябва да е поне 6 символа');
+                return;
+            }
+            
+            if (password !== document.getElementById('register-confirm').value) {
+                showError('register-error', '❌ Паролите не съвпадат');
+                return;
+            }
+            
+            const registerBtn = document.querySelector('#register-form button[type="submit"]');
+            const originalText = registerBtn.innerHTML;
+            registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Регистрация...';
+            registerBtn.disabled = true;
+            
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                await user.updateProfile({
+                    displayName: `${firstName} ${lastName}`
+                });
+                
+                await db.collection('users').doc(user.uid).set({
+                    firstName: firstName,
+                    lastName: lastName,
+                    fullName: `${firstName} ${lastName}`,
+                    email: email,
+                    phone: phone || '',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                    emailVerified: false,
+                    provider: 'email',
+                    isAdmin: false,
+                    role: 'user'
+                });
+                
+                await user.sendEmailVerification();
+                
+                showSuccess('register-success', `✅ Регистрацията е успешна! Изпратихме имейл за потвърждение до <strong>${email}</strong>.`);
+                
+                document.getElementById('register-form').reset();
+                
+                setTimeout(() => {
+                    document.querySelector('[data-page=login]').click();
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                
+                let errorMessage = '';
+                switch(error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMessage = '❌ Този имейл вече е регистриран.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = '❌ Невалиден имейл адрес';
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage = '❌ Паролата е твърде слаба (минимум 6 символа)';
+                        break;
+                    default:
+                        errorMessage = '❌ Грешка при регистрация: ' + error.message;
+                }
+                
+                showError('register-error', errorMessage);
+            } finally {
+                registerBtn.innerHTML = originalText;
+                registerBtn.disabled = false;
+            }
+        }
+
+        async function loginUser(email, password) {
+            if (!email || !password) {
+                showError('login-error', '❌ Моля, попълнете имейл и парола');
+                return;
+            }
+            
+            const loginBtn = document.querySelector('#login-form button[type="submit"]');
+            const originalText = loginBtn.innerHTML;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Вход...';
+            loginBtn.disabled = true;
+            
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                if (!user.emailVerified) {
+                    await auth.signOut();
+                    
+                    const resendButton = `<br><br><button class="btn" onclick="resendVerificationEmail('${email}')" style="padding: 8px 16px; font-size: 0.9rem;">Изпрати отново имейл за потвърждение</button>`;
+                    
+                    showError('login-error', `❌ Имейлът <strong>${email}</strong> не е потвърден. Моля, проверете пощата си.${resendButton}`);
+                    
+                    loginBtn.innerHTML = originalText;
+                    loginBtn.disabled = false;
+                    return;
+                }
+                
+                await db.collection('users').doc(user.uid).update({
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                showSuccess('login-success', '✅ Успешен вход! Пренасочване...');
+                
+                setTimeout(() => {
+                    document.querySelector('[data-page=map]').click();
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                
+                let errorMessage = '';
+                switch(error.code) {
+                    case 'auth/invalid-email':
+                        errorMessage = '❌ Невалиден имейл адрес';
+                        break;
+                    case 'auth/user-disabled':
+                        errorMessage = '❌ Потребителят е деактивиран';
+                        break;
+                    case 'auth/user-not-found':
+                        errorMessage = '❌ Няма потребител с този имейл';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage = '❌ Грешна парола';
+                        break;
+                    default:
+                        errorMessage = '❌ Грешка при вход: ' + error.message;
+                }
+                
+                showError('login-error', errorMessage);
+                
+                loginBtn.innerHTML = originalText;
+                loginBtn.disabled = false;
+            }
+        }
+
+        async function logoutUser() {
+            try {
+                await auth.signOut();
+                showSuccess('login-success', '✅ Успешен изход');
+                document.querySelector('[data-page=map]').click();
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+
+        async function signInWithGoogle(mode) {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            
+            try {
+                const result = await auth.signInWithPopup(provider);
+                const user = result.user;
+                
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                
+                if (!userDoc.exists) {
+                    let firstName = '';
+                    let lastName = '';
+                    
+                    if (user.displayName) {
+                        const nameParts = user.displayName.split(' ');
+                        firstName = nameParts[0] || '';
+                        lastName = nameParts.slice(1).join(' ') || '';
+                    }
+                    
+                    await db.collection('users').doc(user.uid).set({
+                        firstName: firstName,
+                        lastName: lastName,
+                        fullName: user.displayName || '',
+                        email: user.email,
+                        photoURL: user.photoURL || '',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                        emailVerified: user.emailVerified,
+                        provider: 'google',
+                        isAdmin: false,
+                        role: 'user'
+                    });
+                    
+                    showSuccess(mode === 'login' ? 'login-success' : 'register-success', '✅ Успешна регистрация с Google!');
+                } else {
+                    await db.collection('users').doc(user.uid).update({
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    showSuccess(mode === 'login' ? 'login-success' : 'register-success', '✅ Успешен вход с Google!');
+                }
+                
+                setTimeout(() => {
+                    document.querySelector('[data-page=map]').click();
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Google auth error:', error);
+                
+                let errorMessage = '';
+                switch(error.code) {
+                    case 'auth/popup-closed-by-user':
+                        errorMessage = '❌ Прозорецът за вход беше затворен.';
+                        break;
+                    case 'auth/popup-blocked':
+                        errorMessage = '❌ Изскачащият прозорец беше блокиран.';
+                        break;
+                    default:
+                        errorMessage = '❌ Грешка: ' + error.message;
+                }
+                
+                showError(mode === 'login' ? 'login-error' : 'register-error', errorMessage);
+            }
+        }
+
+        window.resendVerificationEmail = async function(email) {
+            const password = prompt('За да изпратите нов имейл за потвърждение, моля въведете паролата си:');
+            
+            if (!password) return;
+            
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                await user.sendEmailVerification();
+                await auth.signOut();
+                
+                showSuccess('login-success', '✅ Имейл за потвърждение е изпратен отново!');
+            } catch (error) {
+                showError('login-error', '❌ Грешка: ' + error.message);
+            }
+        };
 
         // ===== ФУНКЦИИ ЗА ТЕМА И ЕЗИК =====
         function toggleTheme() {
             document.body.classList.toggle('dark-theme');
-            localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+            const isDarkTheme = document.body.classList.contains('dark-theme');
+            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
         }
 
         function loadTheme() {
-            if (localStorage.getItem('theme') === 'dark') {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
                 document.body.classList.add('dark-theme');
-                document.getElementById('darkmode-toggle').checked = true;
+                const darkmodeToggle = document.getElementById('darkmode-toggle');
+                if (darkmodeToggle) darkmodeToggle.checked = true;
             }
         }
 
@@ -3981,13 +4186,20 @@
             document.body.setAttribute('data-lang', lang);
             localStorage.setItem('language', lang);
             
+            // Актуализиране на статусите на паркоместата според езика
             if (currentUser) {
                 updateSpotStatus(1, spot1Status, spot1Distance);
                 updateSpotStatus(2, spot2Status, spot2Distance);
+            } else {
+                updateSpotStatus(1, "ЗАРЕЖДАНЕ", -1);
+                updateSpotStatus(2, "ЗАРЕЖДАНЕ", -1);
             }
             
+            // Актуализиране на времето за последна актуализация
             updateLastUpdateTime();
             
+            // Актуализиране на заглавието на страницата
+            const pageTitle = document.getElementById('page-title');
             const activePage = document.querySelector('.page.active');
             if (activePage) {
                 const pageId = activePage.id.replace('-page', '');
@@ -4000,72 +4212,103 @@
                     'admin': lang === 'bg' ? 'Админ' : 'Admin',
                     'settings': lang === 'bg' ? 'Настройки' : 'Settings'
                 };
-                document.getElementById('page-title').textContent = pageNames[pageId];
+                pageTitle.textContent = pageNames[pageId];
             }
             
-            if (isAdmin && allUsers.length > 0) displayAdminUsers();
+            // Актуализиране на админ таблицата ако е активна
+            if (isAdmin && document.getElementById('admin-page').classList.contains('active')) {
+                displayAdminUsers();
+            }
         }
 
         function loadLanguage() {
             const savedLanguage = localStorage.getItem('language') || 'bg';
             setLanguage(savedLanguage);
-            document.getElementById('language-select').value = savedLanguage;
+            
+            const languageSelect = document.getElementById('language-select');
+            if (languageSelect) {
+                languageSelect.value = savedLanguage;
+            }
         }
 
         // ===== ГЕНЕРИРАНЕ НА ЛЮБИМИ =====
         function generateFavorites() {
             const favoritesList = document.getElementById('favorites-list');
+            if (!favoritesList) return;
+            
             const favorites = [
-                {name: {bg: "ул. Епископ Софроний", en: "Ep. Sofroniy St"}, address: {bg: "Габрово", en: "Gabrovo"}, free: 3, total: 3},
-                {name: {bg: "Централен паркинг", en: "Central"}, address: {bg: "София", en: "Sofia"}, free: 42, total: 158},
-                {name: {bg: "Мол София", en: "Mall Sofia"}, address: {bg: "София", en: "Sofia"}, free: 15, total: 200}
+                {name: {bg: "ул. Епископ Софроний", en: "Ep. Sofroniy St"}, address: {bg: "ул. Епископ Софроний, Габрово", en: "Ep. Sofroniy Street, Gabrovo"}, free: 3, total: 3, status: "free"},
+                {name: {bg: "Централен паркинг", en: "Central"}, address: {bg: "ул. „Граф Игнатиев“ 2, София", en: "2 Graf Ignatiev Street, Sofia"}, free: 42, total: 158, status: "free"},
+                {name: {bg: "Мол София", en: "Mall Sofia"}, address: {bg: "бул. „Александър Малинов“ 31, София", en: "31 Alexander Malinov Blvd, Sofia"}, free: 15, total: 200, status: "free"},
+                {name: {bg: "Паркинг НДК", en: "NDK"}, address: {bg: "бул. „Васил Левски“ 1, София", en: "1 Vasil Levski Blvd, Sofia"}, free: 0, total: 100, status: "busy"}
             ];
             
-            favoritesList.innerHTML = favorites.map(f => `
-                <div class="favorite-card">
+            favoritesList.innerHTML = '';
+            
+            favorites.forEach(function(favorite) {
+                const statusClass = favorite.status === 'free' ? 'status-free' : 'status-busy';
+                const statusTextBg = favorite.status === 'free' ? 'Свободни места' : 'Няма свободни места';
+                const statusTextEn = favorite.status === 'free' ? 'Available' : 'No available spots';
+                
+                const card = document.createElement('div');
+                card.className = 'favorite-card';
+                card.innerHTML = `
                     <div class="favorite-header">
-                        <div class="favorite-name lang-bg">${f.name.bg}</div>
-                        <div class="favorite-name lang-en">${f.name.en}</div>
-                        <div class="favorite-status status-free">${f.free}/${f.total}</div>
+                        <div class="favorite-name lang-bg">${favorite.name.bg}</div>
+                        <div class="favorite-name lang-en">${favorite.name.en}</div>
+                        <div class="favorite-status ${statusClass} lang-bg">${statusTextBg}</div>
+                        <div class="favorite-status ${statusClass} lang-en">${statusTextEn}</div>
                     </div>
-                    <p><i class="fas fa-map-marker-alt"></i> ${f.address.bg}</p>
+                    <p><i class="fas fa-map-marker-alt"></i> <span class="lang-bg">${favorite.address.bg}</span><span class="lang-en">${favorite.address.en}</span></p>
+                    <p><i class="fas fa-car"></i> <span class="lang-bg">Свободни: ${favorite.free} / ${favorite.total}</span><span class="lang-en">Free: ${favorite.free} / ${favorite.total}</span></p>
                     <button class="btn" style="margin-top: 10px; width: 100%;"><i class="fas fa-directions"></i> <span class="lang-bg">Навигирай</span><span class="lang-en">Navigate</span></button>
-                </div>
-            `).join('');
+                `;
+                
+                favoritesList.appendChild(card);
+            });
         }
 
         // ===== ИНИЦИАЛИЗАЦИЯ =====
         document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM зареден, инициализиране...");
+            
             loadTheme();
             loadLanguage();
             
-            setTimeout(initializeMap, 200);
+            // Инициализиране на картата с малко закъснение
+            setTimeout(function() {
+                initializeMap();
+            }, 500);
+            
+            // Настройка на Firebase слушатели
             setupFirebaseListeners();
+            
+            // Първоначално ръчно зареждане на данни
             setTimeout(manualRefresh, 1500);
+            
+            // Генериране на любими паркинги
             generateFavorites();
             
+            // Слушател за състоянието на аутентикация
             auth.onAuthStateChanged((user) => {
+                console.log("Auth state променен:", user ? user.email : "няма потребител");
                 updateUIBasedOnAuth(user);
                 
+                // Актуализираме картата ако вече е създадена
                 if (map && parkingPolygons.length > 0) {
-                    parkingPolygons.forEach(p => map.removeLayer(p));
+                    // Премахваме старите полигони и създаваме нови с актуални цветове
+                    parkingPolygons.forEach(polygon => map.removeLayer(polygon));
                     parkingPolygons = [];
                     createParkingSpots();
                 }
-                
-                if (user) {
-                    updateSpotStatus(1, spot1Status, spot1Distance);
-                    updateSpotStatus(2, spot2Status, spot2Distance);
-                    updateMapColors();
-                }
             });
             
-            // Навигация
+            // Навигация между страниците
             const navItems = document.querySelectorAll('.nav-item');
             const pages = document.querySelectorAll('.page');
             const pageTitle = document.getElementById('page-title');
             
-            navItems.forEach(item => {
+            navItems.forEach(function(item) {
                 item.addEventListener('click', function() {
                     const pageId = this.getAttribute('data-page');
                     
@@ -4074,67 +4317,180 @@
                         return;
                     }
                     
+                    // Проверка за достъп до защитени страници
                     if ((pageId === 'profile' || pageId === 'favorites' || pageId === 'admin') && !currentUser) {
-                        alert(document.body.getAttribute('data-lang') === 'bg' ? 'Моля, влезте в профила си' : 'Please login');
+                        const currentLang = document.body.getAttribute('data-lang') || 'bg';
+                        alert(currentLang === 'bg' ? 'Моля, влезте в профила си, за да достъпите тази страница.' : 'Please login to access this page.');
                         document.querySelector('[data-page=login]').click();
                         return;
                     }
                     
+                    // Проверка за достъп до админ панел
                     if (pageId === 'admin' && !isAdmin) {
-                        alert(document.body.getAttribute('data-lang') === 'bg' ? 'Нямате администраторски права' : 'Admin access only');
+                        const currentLang = document.body.getAttribute('data-lang') || 'bg';
+                        alert(currentLang === 'bg' ? 'Нямате администраторски права!' : 'You do not have admin privileges!');
                         return;
                     }
                     
-                    navItems.forEach(nav => nav.classList.remove('active'));
+                    navItems.forEach(function(nav) {
+                        nav.classList.remove('active');
+                    });
                     this.classList.add('active');
                     
-                    pages.forEach(page => {
+                    pages.forEach(function(page) {
                         page.classList.remove('active');
                         if (page.id === pageId + '-page') {
                             page.classList.add('active');
                             
-                            const lang = document.body.getAttribute('data-lang') || 'bg';
+                            const currentLang = document.body.getAttribute('data-lang') || 'bg';
                             const pageNames = {
-                                'map': lang === 'bg' ? 'Карта' : 'Map',
-                                'favorites': lang === 'bg' ? 'Любими' : 'Favorites',
-                                'profile': lang === 'bg' ? 'Профил' : 'Profile',
-                                'login': lang === 'bg' ? 'Вход' : 'Login',
-                                'register': lang === 'bg' ? 'Регистрация' : 'Register',
-                                'admin': lang === 'bg' ? 'Админ' : 'Admin',
-                                'settings': lang === 'bg' ? 'Настройки' : 'Settings'
+                                'map': currentLang === 'bg' ? 'Карта' : 'Map',
+                                'favorites': currentLang === 'bg' ? 'Любими' : 'Favorites',
+                                'profile': currentLang === 'bg' ? 'Профил' : 'Profile',
+                                'login': currentLang === 'bg' ? 'Вход' : 'Login',
+                                'register': currentLang === 'bg' ? 'Регистрация' : 'Register',
+                                'admin': currentLang === 'bg' ? 'Админ' : 'Admin',
+                                'settings': currentLang === 'bg' ? 'Настройки' : 'Settings'
                             };
                             pageTitle.textContent = pageNames[pageId];
                             
-                            if (pageId === 'map' && map) setTimeout(() => map.invalidateSize(), 300);
-                            if (pageId === 'admin' && isAdmin) loadAllUsers();
+                            if (pageId === 'map' && map) {
+                                setTimeout(() => map.invalidateSize(), 300);
+                            }
+                            
+                            if (pageId === 'admin' && isAdmin) {
+                                loadAllUsers();
+                            }
                         }
                     });
                 });
             });
             
+            // Клик върху потребителската информация
             document.getElementById('userInfo').addEventListener('click', function() {
-                document.querySelector(currentUser ? '[data-page=profile]' : '[data-page=login]').click();
+                if (currentUser) {
+                    document.querySelector('[data-page=profile]').click();
+                } else {
+                    document.querySelector('[data-page=login]').click();
+                }
             });
             
-            document.getElementById('login-form').addEventListener('submit', (e) => {
+            // Форма за вход
+            document.getElementById('login-form').addEventListener('submit', function(e) {
                 e.preventDefault();
-                loginUser(document.getElementById('login-email').value, document.getElementById('login-password').value);
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                loginUser(email, password);
             });
             
-            document.getElementById('register-form').addEventListener('submit', (e) => {
+            // Форма за регистрация
+            document.getElementById('register-form').addEventListener('submit', function(e) {
                 e.preventDefault();
-                registerUser(
-                    document.getElementById('register-email').value,
-                    document.getElementById('register-password').value,
-                    document.getElementById('register-firstname').value,
-                    document.getElementById('register-lastname').value,
-                    document.getElementById('register-phone').value
-                );
+                const firstName = document.getElementById('register-firstname').value;
+                const lastName = document.getElementById('register-lastname').value;
+                const email = document.getElementById('register-email').value;
+                const phone = document.getElementById('register-phone').value;
+                const password = document.getElementById('register-password').value;
+                
+                registerUser(email, password, firstName, lastName, phone);
             });
             
             document.getElementById('editProfileBtn').addEventListener('click', editProfile);
             
-            // Затваряне на модалния прозорец при клик извън него
+            // Забравена парола
+            document.getElementById('forgotPasswordLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                
+                if (!email) {
+                    showError('login-error', '❌ Моля, въведете имейл за възстановяване на паролата');
+                    return;
+                }
+                
+                auth.sendPasswordResetEmail(email)
+                    .then(() => {
+                        showSuccess('login-success', `✅ Изпратен е имейл за възстановяване на паролата до <strong>${email}</strong>`);
+                    })
+                    .catch((error) => {
+                        if (error.code === 'auth/user-not-found') {
+                            showError('login-error', '❌ Няма потребител с този имейл');
+                        } else {
+                            showError('login-error', '❌ Грешка: ' + error.message);
+                        }
+                    });
+            });
+            
+            document.getElementById('forgotPasswordLinkEn').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('forgotPasswordLink').click();
+            });
+            
+            // Google вход
+            document.getElementById('googleLoginBtn').addEventListener('click', () => signInWithGoogle('login'));
+            document.getElementById('googleRegisterBtn').addEventListener('click', () => signInWithGoogle('register'));
+            
+            // Бутон за търсене
+            document.getElementById('search-btn').addEventListener('click', function() {
+                const searchTerm = document.getElementById('search-input').value;
+                if (searchTerm.trim() !== '') {
+                    const currentLang = document.body.getAttribute('data-lang') || 'bg';
+                    alert(currentLang === 'bg' ? 'Търсене за: "' + searchTerm + '"' : 'Searching for: "' + searchTerm + '"');
+                }
+            });
+            
+            // Тъмна тема toggle
+            const darkmodeToggle = document.getElementById('darkmode-toggle');
+            if (darkmodeToggle) {
+                darkmodeToggle.addEventListener('change', toggleTheme);
+            }
+            
+            // Език select
+            const languageSelect = document.getElementById('language-select');
+            if (languageSelect) {
+                languageSelect.addEventListener('change', function() {
+                    setLanguage(this.value);
+                });
+            }
+            
+            // Бутон за изход от профил страницата
+            document.getElementById('logoutProfileBtn').addEventListener('click', logoutUser);
+            
+            // Контакти
+            const contactBubble = document.getElementById('contactBubble');
+            const contactModal = document.getElementById('contactModal');
+            const closeModal = document.getElementById('closeModal');
+            const contactForm = document.getElementById('contactForm');
+            
+            contactBubble.addEventListener('click', function() {
+                contactModal.classList.toggle('active');
+            });
+            
+            closeModal.addEventListener('click', function() {
+                contactModal.classList.remove('active');
+            });
+            
+            document.addEventListener('click', function(event) {
+                if (!contactModal.contains(event.target) && !contactBubble.contains(event.target) && contactModal.classList.contains('active')) {
+                    contactModal.classList.remove('active');
+                }
+            });
+            
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const message = this.querySelector('textarea').value;
+                if (message.trim() !== '') {
+                    const currentLang = document.body.getAttribute('data-lang') || 'bg';
+                    alert(currentLang === 'bg' ? 'Вашето съобщение беше изпратено успешно!' : 'Your message was sent successfully!');
+                    this.querySelector('textarea').value = '';
+                    contactModal.classList.remove('active');
+                }
+            });
+            
+            contactModal.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            // Затваряне на модалните прозорци при клик извън тях
             document.getElementById('userDetailsModal').addEventListener('click', function(e) {
                 if (e.target === this) {
                     closeUserDetailsModal();
@@ -4146,55 +4502,12 @@
                     closeEditModal();
                 }
             });
-            
-            document.getElementById('forgotPasswordLink').addEventListener('click', (e) => {
-                e.preventDefault();
-                const email = document.getElementById('login-email').value;
-                if (!email) {
-                    showError('login-error', '❌ Въведете имейл');
-                    return;
-                }
-                auth.sendPasswordResetEmail(email)
-                    .then(() => showSuccess('login-success', '✅ Изпратен е имейл за възстановяване'))
-                    .catch(() => showError('login-error', '❌ Грешка'));
-            });
-            
-            document.getElementById('googleLoginBtn').addEventListener('click', () => signInWithGoogle('login'));
-            document.getElementById('googleRegisterBtn').addEventListener('click', () => signInWithGoogle('register'));
-            
-            document.getElementById('search-btn').addEventListener('click', () => {
-                const term = document.getElementById('search-input').value;
-                if (term) alert('Търсене: ' + term);
-            });
-            
-            document.getElementById('darkmode-toggle').addEventListener('change', toggleTheme);
-            
-            document.getElementById('language-select').addEventListener('change', function() {
-                setLanguage(this.value);
-            });
-            
-            document.getElementById('logoutProfileBtn').addEventListener('click', logoutUser);
-            
-            // Контакти
-            const contactBubble = document.getElementById('contactBubble');
-            const contactModal = document.getElementById('contactModal');
-            const closeModal = document.getElementById('closeModal');
-            
-            contactBubble.addEventListener('click', () => contactModal.classList.toggle('active'));
-            closeModal.addEventListener('click', () => contactModal.classList.remove('active'));
-            document.addEventListener('click', (e) => {
-                if (!contactModal.contains(e.target) && !contactBubble.contains(e.target) && contactModal.classList.contains('active')) {
-                    contactModal.classList.remove('active');
-                }
-            });
-            
-            document.getElementById('contactForm').addEventListener('submit', (e) => {
-                e.preventDefault();
-                alert('Съобщението е изпратено');
-                e.target.reset();
-                contactModal.classList.remove('active');
-            });
         });
+        
+        console.log("Система за мониторинг на паркинг места - Габрово");
+        console.log("Използва два Firebase проекта:");
+        console.log("- Authentication & Firestore: registration-88c86");
+        console.log("- Realtime Database: esp32-5d620");
     </script>
 </body>
 </html>
