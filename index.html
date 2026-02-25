@@ -63,6 +63,8 @@
             --restricted-opacity: 0.4;
             --admin-badge: #ffc107;
             --admin-text: #000000;
+            --favorite: #ffc107;
+            --favorite-hover: #ffb300;
         }
 
         /* Тъмна тема */
@@ -98,6 +100,8 @@
             --status-badge-text: #ffffff;
             --admin-badge: #ffc107;
             --admin-text: #000000;
+            --favorite: #ffc107;
+            --favorite-hover: #ffb300;
         }
 
         body {
@@ -685,6 +689,11 @@
             background: var(--accent);
             opacity: 0.7;
         }
+        
+        .legend-color.yellow {
+            background: var(--favorite);
+            opacity: 0.7;
+        }
 
         .icon-success {
             color: var(--success);
@@ -996,6 +1005,24 @@
             margin-right: 8px;
         }
 
+        .btn-favorite {
+            background: var(--favorite);
+            color: black;
+        }
+
+        .btn-favorite:hover {
+            background: var(--favorite-hover);
+        }
+
+        .btn-navigate {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-navigate:hover {
+            background: #219a52;
+        }
+
         /* Стилове за вход */
         .auth-container {
             max-width: 450px;
@@ -1267,7 +1294,7 @@
             text-decoration: none;
         }
 
-        /* Списъци */
+        /* Списъци - Любими */
         .favorites-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -1328,6 +1355,37 @@
         .status-busy {
             background-color: rgba(231, 76, 60, 0.15);
             color: var(--accent);
+        }
+
+        .favorite-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .favorite-actions button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .favorite-actions button i {
+            margin-right: 5px;
+        }
+
+        .favorite-actions .navigate-btn {
+            background: var(--success);
+            color: white;
+        }
+
+        .favorite-actions .remove-btn {
+            background: var(--accent);
+            color: white;
         }
 
         /* Настройки */
@@ -2358,6 +2416,10 @@
                 margin: 10px;
                 padding: 20px;
             }
+            
+            .favorite-actions {
+                flex-direction: column;
+            }
         }
 
         @media (max-width: 380px) {
@@ -2472,8 +2534,11 @@
         <!-- Сайдбар с навигация -->
         <div class="sidebar">
             <div class="sidebar-header">
-                 <h2><img src="logo .svg" alt="Parkly logo" class="logo-icon"> <span class="lang-bg">Parkly</span><span class="lang-en">Parkly</span></h2>
-
+                <h2>
+                    <img src="logo.svg" alt="Parkly" class="logo-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                    <i class="fas fa-parking logo-icon" style="display: none;"></i>
+                    <span>Parkly</span>
+                </h2>
             </div>
             
             <div class="nav-menu">
@@ -2673,15 +2738,30 @@
                                 <span class="lang-bg">Заето</span>
                                 <span class="lang-en">Occupied</span>
                             </div>
+                            <div class="legend-item">
+                                <div class="legend-color yellow"></div>
+                                <span class="lang-bg">Любимо</span>
+                                <span class="lang-en">Favorite</span>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Любими места -->
                 <div id="favorites-page" class="page">
-                    <h2 class="form-title lang-bg">Любими паркинги</h2>
-                    <h2 class="form-title lang-en">Favorites</h2>
-                    <div class="favorites-list" id="favorites-list"></div>
+                    <h2 class="form-title lang-bg">⭐ Любими паркинги</h2>
+                    <h2 class="form-title lang-en">⭐ Favorite Parking Lots</h2>
+                    
+                    <!-- Login prompt за любими -->
+                    <div id="favorites-login-prompt" style="display: none; text-align: center; padding: 50px 20px;">
+                        <i class="fas fa-lock" style="font-size: 3rem; color: var(--text-secondary); margin-bottom: 20px;"></i>
+                        <p class="lang-bg">Моля, <a href="#" onclick="document.querySelector('[data-page=login]').click(); return false;">влезте</a> в профила си, за да видите любимите места.</p>
+                        <p class="lang-en">Please <a href="#" onclick="document.querySelector('[data-page=login]').click(); return false;">login</a> to see your favorite spots.</p>
+                    </div>
+                    
+                    <div id="favorites-list-container">
+                        <div class="favorites-list" id="favorites-list"></div>
+                    </div>
                 </div>
                 
                 <!-- Моят профил -->
@@ -3138,6 +3218,14 @@
         let filteredUsers = [];
         let currentAdminPage = 1;
         const usersPerPage = 10;
+        let userFavorites = []; // Масив с любими места на потребителя
+        
+        // Данни за паркоместата
+        const parkingSpotsData = [
+            { id: "spot1", number: 1, name: "Място 1", nameEn: "Spot 1", type: "disabled", lat: 42.8768, lng: 25.3179 },
+            { id: "spot2", number: 2, name: "Място 2", nameEn: "Spot 2", type: "regular", lat: 42.8768, lng: 25.3179 },
+            { id: "spot3", number: 3, name: "Място 3", nameEn: "Spot 3", type: "regular", lat: 42.8768, lng: 25.3179 }
+        ];
         
         // ===== PWA Инсталация =====
         let deferredPrompt;
@@ -3201,6 +3289,211 @@
             }
         }
 
+        // ===== ФУНКЦИИ ЗА ЛЮБИМИ МЕСТА =====
+        async function loadUserFavorites() {
+            if (!currentUser) return;
+            
+            try {
+                const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    userFavorites = userData.favorites || [];
+                    console.log("Любими места заредени:", userFavorites);
+                }
+            } catch (error) {
+                console.error('Грешка при зареждане на любими:', error);
+            }
+        }
+
+        async function toggleFavorite(spotId) {
+            if (!currentUser) {
+                const currentLang = document.body.getAttribute('data-lang') || 'bg';
+                alert(currentLang === 'bg' ? 'Моля, влезте в профила си, за да добавяте любими места.' : 'Please login to add favorites.');
+                document.querySelector('[data-page=login]').click();
+                return;
+            }
+            
+            try {
+                const userRef = db.collection('users').doc(currentUser.uid);
+                const userDoc = await userRef.get();
+                
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    let favorites = userData.favorites || [];
+                    
+                    if (favorites.includes(spotId)) {
+                        // Премахване от любими
+                        favorites = favorites.filter(id => id !== spotId);
+                        showSuccess('login-success', 'Премахнато от любими!');
+                    } else {
+                        // Добавяне към любими
+                        favorites.push(spotId);
+                        showSuccess('login-success', 'Добавено към любими!');
+                    }
+                    
+                    await userRef.update({ favorites: favorites });
+                    userFavorites = favorites;
+                    
+                    // Актуализираме бутоните на картата
+                    updateFavoriteButtons();
+                    
+                    // Актуализираме списъка с любими, ако страницата е активна
+                    if (document.getElementById('favorites-page').classList.contains('active')) {
+                        displayFavorites();
+                    }
+                    
+                    // Актуализираме попъпите на картата
+                    if (map && parkingPolygons.length > 0) {
+                        parkingPolygons.forEach(polygon => map.removeLayer(polygon));
+                        parkingPolygons = [];
+                        createParkingSpots();
+                    }
+                }
+            } catch (error) {
+                console.error('Грешка при промяна на любими:', error);
+                alert('Грешка: ' + error.message);
+            }
+        }
+
+        function isFavorite(spotId) {
+            return userFavorites && userFavorites.includes(spotId);
+        }
+
+        function updateFavoriteButtons() {
+            // Актуализираме всички бутони за любими на картата
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                const spotId = btn.getAttribute('data-spot-id');
+                if (isFavorite(spotId)) {
+                    btn.innerHTML = '<i class="fas fa-star"></i> Премахни';
+                    btn.classList.add('btn-warning');
+                    btn.classList.remove('btn-favorite');
+                } else {
+                    btn.innerHTML = '<i class="far fa-star"></i> Любимо';
+                    btn.classList.add('btn-favorite');
+                    btn.classList.remove('btn-warning');
+                }
+            });
+        }
+
+        function navigateToSpot(lat, lng, spotName) {
+            const currentLang = document.body.getAttribute('data-lang') || 'bg';
+            
+            // Получаване на текущото место на потребителя
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const userLat = position.coords.latitude;
+                        const userLng = position.coords.longitude;
+                        
+                        // Проверка дали устройството е мобилно
+                        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                        
+                        if (isMobile) {
+                            // Отваряне в Google Maps приложение на мобилно с маршрут
+                            const url = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLng}&destination=${lat},${lng}&travelmode=driving`;
+                            window.open(url, '_blank');
+                        } else {
+                            // Отваряне в Google Maps в нов прозорец на десктоп с маршрут
+                            const url = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLng}&destination=${lat},${lng}&travelmode=driving`;
+                            window.open(url, '_blank');
+                        }
+                        
+                        console.log(`Навигация от (${userLat}, ${userLng}) до: ${spotName} (${lat}, ${lng})`);
+                    },
+                    function(error) {
+                        // Грешка при получаването на местоположението - отваряме без маршрут
+                        console.warn(`Грешка при получаването на местоположението: ${error.message}`);
+                        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                        
+                        if (isMobile) {
+                            const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
+                            window.open(url, '_blank');
+                        } else {
+                            const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
+                            window.open(url, '_blank');
+                        }
+                        
+                        console.log(`Навигация до: ${spotName} (${lat}, ${lng}) - без начална точка`);
+                    }
+                );
+            } else {
+                // Ако браузърът не поддържа Geolocation API
+                console.warn('Geolocation не е поддържано в этот браузър');
+                const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
+                window.open(url, '_blank');
+            }
+        }
+
+        // ===== ФУНКЦИИ ЗА ПОКАЗВАНЕ НА ЛЮБИМИ =====
+        async function displayFavorites() {
+            const favoritesList = document.getElementById('favorites-list');
+            const loginPrompt = document.getElementById('favorites-login-prompt');
+            const container = document.getElementById('favorites-list-container');
+            
+            if (!currentUser) {
+                // Показваме съобщение за вход
+                loginPrompt.style.display = 'block';
+                container.style.display = 'none';
+                return;
+            }
+            
+            loginPrompt.style.display = 'none';
+            container.style.display = 'block';
+            
+            if (!favoritesList) return;
+            
+            // Зареждаме любимите ако не са заредени
+            if (userFavorites.length === 0) {
+                await loadUserFavorites();
+            }
+            
+            if (userFavorites.length === 0) {
+                favoritesList.innerHTML = '<p style="text-align: center; padding: 50px;">Нямате добавени любими места.</p>';
+                return;
+            }
+            
+            const currentLang = document.body.getAttribute('data-lang') || 'bg';
+            
+            // Филтрираме само любимите места
+            const favoriteSpots = parkingSpotsData.filter(spot => userFavorites.includes(spot.id));
+            
+            favoritesList.innerHTML = favoriteSpots.map(spot => {
+                const spotStatus = spot.id === 'spot1' ? spot1Status : 
+                                   spot.id === 'spot2' ? spot2Status : 'СВОБОДНО';
+                
+                const statusClass = spotStatus === 'СВОБОДНО' || spotStatus === 'ПРАЗНО' ? 'status-free' : 
+                                   (spotStatus === 'ЗАЕТО' ? 'status-busy' : '');
+                
+                const statusText = spotStatus === 'ПРАЗНО' ? 'СВОБОДНО' : spotStatus;
+                
+                return `
+                <div class="favorite-card">
+                    <div class="favorite-header">
+                        <div class="favorite-name lang-bg">${spot.name}</div>
+                        <div class="favorite-name lang-en">${spot.nameEn}</div>
+                        ${spot.type === 'disabled' ? '<i class="fas fa-wheelchair" style="color: var(--secondary);"></i>' : ''}
+                    </div>
+                    <p><i class="fas fa-map-marker-alt"></i> ул. "Епископ Софроний", Габрово</p>
+                    <p><i class="fas fa-car"></i> 
+                        <span class="lang-bg">Статус: </span>
+                        <span class="lang-en">Status: </span>
+                        <span class="${statusClass}" style="padding: 3px 8px; border-radius: 5px;">${statusText}</span>
+                    </p>
+                    ${spot.id === 'spot1' && currentUser ? `<p><i class="fas fa-ruler"></i> Разстояние: ${spot1Distance} см</p>` : ''}
+                    ${spot.id === 'spot2' && currentUser ? `<p><i class="fas fa-ruler"></i> Разстояние: ${spot2Distance} см</p>` : ''}
+                    
+                    <div class="favorite-actions">
+                        <button class="navigate-btn" onclick="navigateToSpot(${spot.lat}, ${spot.lng}, '${spot.name}')">
+                            <i class="fas fa-directions"></i> <span class="lang-bg">Навигирай</span><span class="lang-en">Navigate</span>
+                        </button>
+                        <button class="remove-btn" onclick="toggleFavorite('${spot.id}')">
+                            <i class="fas fa-trash"></i> <span class="lang-bg">Премахни</span><span class="lang-en">Remove</span>
+                        </button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
         // ===== ФУНКЦИИ ЗА АКТУАЛИЗИРАНЕ НА UI СПОРЕД ПОТРЕБИТЕЛЯ =====
         function updateUIBasedOnAuth(user) {
             const loginNavItem = document.getElementById('login-nav-item');
@@ -3230,6 +3523,12 @@
                 statusPanel.classList.remove('restricted');
                 loginPrompt.style.display = 'none';
                 
+                // Зареждаме любимите на потребителя
+                loadUserFavorites().then(() => {
+                    // Актуализираме бутоните на картата
+                    updateFavoriteButtons();
+                });
+                
                 // Зареждаме потребителските данни от Firestore
                 loadUserProfile(user.uid);
                 
@@ -3257,6 +3556,7 @@
                 // Потребителят не е логнат
                 currentUser = null;
                 isAdmin = false;
+                userFavorites = [];
                 
                 loginNavItem.style.display = 'flex';
                 registerNavItem.style.display = 'flex';
@@ -3282,6 +3582,11 @@
                 // Нулираме админ данните
                 allUsers = [];
                 filteredUsers = [];
+                
+                // Актуализираме любимите
+                if (document.getElementById('favorites-page').classList.contains('active')) {
+                    displayFavorites();
+                }
             }
         }
 
@@ -3460,6 +3765,7 @@
                 const isAdminUser = user.isAdmin || user.role === 'admin';
                 const createdAt = user.createdAt ? new Date(user.createdAt.seconds * 1000).toLocaleDateString('bg-BG') : '-';
                 const lastLogin = user.lastLogin ? new Date(user.lastLogin.seconds * 1000).toLocaleDateString('bg-BG') : '-';
+                const favoritesCount = user.favorites ? user.favorites.length : 0;
                 
                 return `
                 <tr>
@@ -3539,6 +3845,7 @@
             const createdAt = user.createdAt ? new Date(user.createdAt.seconds * 1000).toLocaleString('bg-BG') : '-';
             const lastLogin = user.lastLogin ? new Date(user.lastLogin.seconds * 1000).toLocaleString('bg-BG') : '-';
             const lang = document.body.getAttribute('data-lang') || 'bg';
+            const favoritesCount = user.favorites ? user.favorites.length : 0;
             
             const detailsHtml = `
                 <div class="user-detail-item">
@@ -3564,6 +3871,10 @@
                 <div class="user-detail-item">
                     <div class="user-detail-label">${lang === 'bg' ? 'Имейл потвърден' : 'Email verified'}</div>
                     <div class="user-detail-value"><i class="fas fa-${user.emailVerified ? 'check-circle' : 'times-circle'}" style="color: ${user.emailVerified ? 'var(--success)' : 'var(--accent)'}"></i> ${user.emailVerified ? (lang === 'bg' ? 'Да' : 'Yes') : (lang === 'bg' ? 'Не' : 'No')}</div>
+                </div>
+                <div class="user-detail-item">
+                    <div class="user-detail-label">${lang === 'bg' ? 'Любими места' : 'Favorites'}</div>
+                    <div class="user-detail-value"><i class="fas fa-star" style="color: var(--favorite);"></i> ${favoritesCount}</div>
                 </div>
                 <div class="user-detail-item">
                     <div class="user-detail-label">${lang === 'bg' ? 'Регистрация' : 'Registered'}</div>
@@ -3617,6 +3928,11 @@
                     }
                     updateLastUpdateTime();
                     updateFreeSpotsCount();
+                    
+                    // Актуализираме любимите, ако страницата е активна
+                    if (document.getElementById('favorites-page').classList.contains('active')) {
+                        displayFavorites();
+                    }
                 }
             });
             
@@ -3638,6 +3954,11 @@
                     }
                     updateLastUpdateTime();
                     updateFreeSpotsCount();
+                    
+                    // Актуализираме любимите, ако страницата е активна
+                    if (document.getElementById('favorites-page').classList.contains('active')) {
+                        displayFavorites();
+                    }
                 }
             });
             
@@ -3762,6 +4083,11 @@
                     }
                     updateLastUpdateTime();
                     updateFreeSpotsCount();
+                    
+                    // Актуализираме любимите, ако страницата е активна
+                    if (document.getElementById('favorites-page').classList.contains('active')) {
+                        displayFavorites();
+                    }
                 }
                 if (refreshBtn) {
                     refreshBtn.className = 'fas fa-sync-alt';
@@ -3842,12 +4168,17 @@
             parkingPolygons = [];
             
             for (let i = 0; i < 3; i++) {
+                const spotId = `spot${i+1}`;
                 const offsetLng = metersToDegrees(i * (parkingWidth + spaceBetween));
                 const totalWidth = 3 * parkingWidth + 2 * spaceBetween;
                 const centerOffset = metersToDegrees(totalWidth / 2);
                 
                 const spotLat = centerLat;
                 const spotLng = centerLng + offsetLng - centerOffset;
+                
+                // Запазваме координатите в данните за мястото
+                parkingSpotsData[i].lat = spotLat;
+                parkingSpotsData[i].lng = spotLng;
                 
                 const halfWidth = metersToDegrees(parkingWidth) / 2;
                 const halfLength = metersToDegrees(parkingLength) / 2;
@@ -3902,23 +4233,46 @@
                 if (i === 1) statusText = spot2Status;
                 else if (i === 2) statusText = "СВОБОДНО";
                 
-                let popupContent = '<div style="text-align: center; min-width: 220px;"><div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;"><div style="background: ' + fillColor + '; color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px;">' + (i + 1) + '</div>' + (i === 0 ? '<i class="fas fa-wheelchair" style="color: #0066cc; font-size: 24px;"></i>' : '') + '</div><h3 style="margin: 0 0 8px; color: #1a2639; font-weight: 600;">Паркомясто ' + (i + 1) + '</h3>';
+                const currentLang = document.body.getAttribute('data-lang') || 'bg';
+                
+                let popupContent = '<div style="text-align: center; min-width: 280px;">';
+                popupContent += '<div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">';
+                popupContent += '<div style="background: ' + fillColor + '; color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px;">' + (i + 1) + '</div>';
+                popupContent += (i === 0 ? '<i class="fas fa-wheelchair" style="color: #0066cc; font-size: 24px;"></i>' : '');
+                popupContent += '</div>';
+                popupContent += '<h3 style="margin: 0 0 8px; color: #1a2639; font-weight: 600;">Паркомясто ' + (i + 1) + '</h3>';
                 
                 if (i === 0) {
                     popupContent += '<p style="margin: 0 0 8px; font-size: 14px; color: #0066cc; font-weight: 600; background: #e3f2fd; padding: 4px 12px; border-radius: 30px; display: inline-block;">✦ За хора с увреждания ✦</p>';
                 }
                 
-                popupContent += '<p style="margin: 0 0 12px; font-size: 13px; color: #5a6a7a;"><i class="fas fa-map-marker-alt" style="color: #ea4335;"></i> ул. "Епископ Софроний", Габрово</p><div style="text-align: left; font-size: 13px; background: #f8f9fa; padding: 12px; border-radius: 12px;"><div style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-circle" style="color: ' + fillColor + '; font-size: 10px;"></i><strong>Статус:</strong> <span style="color: ' + fillColor + '; font-weight: 700;">' + statusText + '</span></div>';
+                popupContent += '<p style="margin: 0 0 12px; font-size: 13px; color: #5a6a7a;"><i class="fas fa-map-marker-alt" style="color: #ea4335;"></i> ул. "Епископ Софроний", Габрово</p>';
+                popupContent += '<div style="text-align: left; font-size: 13px; background: #f8f9fa; padding: 12px; border-radius: 12px;">';
+                popupContent += '<div style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">';
+                popupContent += '<i class="fas fa-circle" style="color: ' + fillColor + '; font-size: 10px;"></i><strong>Статус:</strong> <span style="color: ' + fillColor + '; font-weight: 700;">' + statusText + '</span>';
+                popupContent += '</div>';
                 
                 if (i === 0 && currentUser) {
-                    popupContent += '<div style="display: flex; align-items: center; gap: 8px;"><i class="fas fa-ruler"></i><strong>Разстояние:</strong> ' + spot1Distance + ' см</div>';
+                    popupContent += '<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;"><i class="fas fa-ruler"></i><strong>Разстояние:</strong> ' + spot1Distance + ' см</div>';
                 }
                 if (i === 1 && currentUser) {
-                    popupContent += '<div style="display: flex; align-items: center; gap: 8px;"><i class="fas fa-ruler"></i><strong>Разстояние:</strong> ' + spot2Distance + ' см</div>';
+                    popupContent += '<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;"><i class="fas fa-ruler"></i><strong>Разстояние:</strong> ' + spot2Distance + ' см</div>';
                 }
                 
                 if (!currentUser) {
                     popupContent += '<div style="margin-top: 8px; padding: 8px; background: #fff3cd; border-radius: 8px; color: #856404;"><i class="fas fa-lock"></i> Влезте, за да видите статуса</div>';
+                } else {
+                    const favoriteText = isFavorite(spotId) ? 
+                        (currentLang === 'bg' ? 'Премахни от любими' : 'Remove from favorites') : 
+                        (currentLang === 'bg' ? 'Добави към любими' : 'Add to favorites');
+                    
+                    const favoriteIcon = isFavorite(spotId) ? 'fas fa-star' : 'far fa-star';
+                    const favoriteClass = isFavorite(spotId) ? 'btn-warning' : 'btn-favorite';
+                    
+                    popupContent += '<div style="display: flex; gap: 8px; margin-top: 12px;">';
+                    popupContent += '<button class="btn-small ' + favoriteClass + ' favorite-btn" onclick="toggleFavorite(\'' + spotId + '\')" data-spot-id="' + spotId + '" style="flex: 1;"><i class="' + favoriteIcon + '"></i> ' + favoriteText + '</button>';
+                    popupContent += '<button class="btn-small btn-success" onclick="navigateToSpot(' + spotLat + ', ' + spotLng + ', \'' + (i === 0 ? 'Място 1' : i === 1 ? 'Място 2' : 'Място 3') + '\')" style="flex: 1;"><i class="fas fa-directions"></i> ' + (currentLang === 'bg' ? 'Навигирай' : 'Navigate') + '</button>';
+                    popupContent += '</div>';
                 }
                 
                 popupContent += '</div></div>';
@@ -3970,7 +4324,8 @@
                     emailVerified: false,
                     provider: 'email',
                     isAdmin: false,
-                    role: 'user'
+                    role: 'user',
+                    favorites: []
                 });
                 
                 await user.sendEmailVerification();
@@ -4113,7 +4468,8 @@
                         emailVerified: user.emailVerified,
                         provider: 'google',
                         isAdmin: false,
-                        role: 'user'
+                        role: 'user',
+                        favorites: []
                     });
                     
                     showSuccess(mode === 'login' ? 'login-success' : 'register-success', '✅ Успешна регистрация с Google!');
@@ -4219,6 +4575,11 @@
             if (isAdmin && document.getElementById('admin-page').classList.contains('active')) {
                 displayAdminUsers();
             }
+            
+            // Актуализиране на любимите ако страницата е активна
+            if (document.getElementById('favorites-page').classList.contains('active')) {
+                displayFavorites();
+            }
         }
 
         function loadLanguage() {
@@ -4229,43 +4590,6 @@
             if (languageSelect) {
                 languageSelect.value = savedLanguage;
             }
-        }
-
-        // ===== ГЕНЕРИРАНЕ НА ЛЮБИМИ =====
-        function generateFavorites() {
-            const favoritesList = document.getElementById('favorites-list');
-            if (!favoritesList) return;
-            
-            const favorites = [
-                {name: {bg: "ул. Епископ Софроний", en: "Ep. Sofroniy St"}, address: {bg: "ул. Епископ Софроний, Габрово", en: "Ep. Sofroniy Street, Gabrovo"}, free: 3, total: 3, status: "free"},
-                {name: {bg: "Централен паркинг", en: "Central"}, address: {bg: "ул. „Граф Игнатиев“ 2, София", en: "2 Graf Ignatiev Street, Sofia"}, free: 42, total: 158, status: "free"},
-                {name: {bg: "Мол София", en: "Mall Sofia"}, address: {bg: "бул. „Александър Малинов“ 31, София", en: "31 Alexander Malinov Blvd, Sofia"}, free: 15, total: 200, status: "free"},
-                {name: {bg: "Паркинг НДК", en: "NDK"}, address: {bg: "бул. „Васил Левски“ 1, София", en: "1 Vasil Levski Blvd, Sofia"}, free: 0, total: 100, status: "busy"}
-            ];
-            
-            favoritesList.innerHTML = '';
-            
-            favorites.forEach(function(favorite) {
-                const statusClass = favorite.status === 'free' ? 'status-free' : 'status-busy';
-                const statusTextBg = favorite.status === 'free' ? 'Свободни места' : 'Няма свободни места';
-                const statusTextEn = favorite.status === 'free' ? 'Available' : 'No available spots';
-                
-                const card = document.createElement('div');
-                card.className = 'favorite-card';
-                card.innerHTML = `
-                    <div class="favorite-header">
-                        <div class="favorite-name lang-bg">${favorite.name.bg}</div>
-                        <div class="favorite-name lang-en">${favorite.name.en}</div>
-                        <div class="favorite-status ${statusClass} lang-bg">${statusTextBg}</div>
-                        <div class="favorite-status ${statusClass} lang-en">${statusTextEn}</div>
-                    </div>
-                    <p><i class="fas fa-map-marker-alt"></i> <span class="lang-bg">${favorite.address.bg}</span><span class="lang-en">${favorite.address.en}</span></p>
-                    <p><i class="fas fa-car"></i> <span class="lang-bg">Свободни: ${favorite.free} / ${favorite.total}</span><span class="lang-en">Free: ${favorite.free} / ${favorite.total}</span></p>
-                    <button class="btn" style="margin-top: 10px; width: 100%;"><i class="fas fa-directions"></i> <span class="lang-bg">Навигирай</span><span class="lang-en">Navigate</span></button>
-                `;
-                
-                favoritesList.appendChild(card);
-            });
         }
 
         // ===== ИНИЦИАЛИЗАЦИЯ =====
@@ -4285,9 +4609,6 @@
             
             // Първоначално ръчно зареждане на данни
             setTimeout(manualRefresh, 1500);
-            
-            // Генериране на любими паркинги
-            generateFavorites();
             
             // Слушател за състоянието на аутентикация
             auth.onAuthStateChanged((user) => {
@@ -4360,6 +4681,10 @@
                             
                             if (pageId === 'admin' && isAdmin) {
                                 loadAllUsers();
+                            }
+                            
+                            if (pageId === 'favorites' && currentUser) {
+                                displayFavorites();
                             }
                         }
                     });
