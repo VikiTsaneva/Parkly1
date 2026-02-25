@@ -2390,15 +2390,33 @@
             .users-table {
                 padding: 10px;
                 overflow-x: auto;
+                width: 100%;
             }
             
             .users-table table {
-                min-width: 800px;
-                font-size: 0.8rem;
+                min-width: 100%;
+                font-size: 0.75rem;
+                width: 100%;
+                table-layout: fixed;
             }
             
             .users-table th, .users-table td {
-                padding: 8px 5px;
+                padding: 6px 4px;
+                white-space: normal;
+                overflow-wrap: break-word;
+            }
+
+            /* Правила за колоната с действия - позволява пренасяне на бутоните при тесни ширини */
+            .users-table td.actions-cell {
+                display: flex;
+                gap: 6px;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: flex-start;
+            }
+
+            .users-table td.actions-cell .btn-small {
+                margin: 2px 2px 0 0;
             }
             
             .btn-small {
@@ -2435,6 +2453,30 @@
             .sidebar-header .logo-icon {
                 width: 25px;
                 height: 25px;
+            }
+            
+            .users-table {
+                padding: 5px;
+            }
+            
+            .users-table h2 {
+                font-size: 0.9rem;
+                margin-bottom: 10px;
+            }
+            
+            .users-table table {
+                min-width: 100%;
+                font-size: 0.65rem;
+            }
+            
+            .users-table th, .users-table td {
+                padding: 4px 2px;
+            }
+            
+            .btn-small {
+                padding: 2px 4px;
+                font-size: 0.65rem;
+                margin: 1px 0;
             }
             
             .nav-menu {
@@ -2501,6 +2543,79 @@
             }
         }
 
+        /* Допълнителни responsive правила за много малки екрани */
+        @media (max-width: 480px) {
+            /* Повишаваме четливостта */
+            .users-table {
+                font-size: 0.9rem;
+            }
+
+            .users-table th, .users-table td {
+                padding: 8px 6px;
+            }
+
+            /* Скриваме по-маловажни колони (Role, Provider, Reg., Last Login) за да се виждат основните данни */
+            .users-table th:nth-child(4), .users-table td:nth-child(4),
+            .users-table th:nth-child(6), .users-table td:nth-child(6),
+            .users-table th:nth-child(7), .users-table td:nth-child(7),
+            .users-table th:nth-child(8), .users-table td:nth-child(8) {
+                display: none;
+            }
+
+            /* Направете бутоните удобни за докосване - пълна ширина и пренасяне */
+            .users-table td.actions-cell {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .users-table td.actions-cell .btn-small {
+                width: 100%;
+                box-sizing: border-box;
+                padding: 8px 10px;
+                font-size: 0.9rem;
+            }
+
+            /* Преобразуване на таблицата в карти за още по-малки екрани */
+            .users-table table, .users-table thead {
+                width: 100%;
+            }
+            .users-table thead {
+                display: none;
+            }
+            .users-table tbody, .users-table tr {
+                display: block;
+            }
+            .users-table tr {
+                background: var(--card-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 10px;
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+            .users-table td {
+                display: flex;
+                justify-content: space-between;
+                padding: 6px 8px;
+                border-bottom: none;
+            }
+            .users-table td:before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: var(--text-secondary);
+                margin-right: 8px;
+                flex: 0 0 40%;
+            }
+            .users-table td.actions-cell {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .users-table td.actions-cell .btn-small {
+                width: 100%;
+            }
+        }
+
         [data-lang="bg"] .lang-en {
             display: none !important;
         }
@@ -2535,7 +2650,7 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <h2>
-                    <h2><img src="logo .svg" alt="Parkly logo" class="logo-icon"> <span class="lang-bg">Parkly</span><span class="lang-en">Parkly</span></h2>
+                     <h2><img src="logo .svg" alt="Parkly logo" class="logo-icon"> <span class="lang-bg">Parkly</span><span class="lang-en">Parkly</span></h2>
                 </h2>
             </div>
             
@@ -3700,8 +3815,20 @@
         // ===== АДМИН ФУНКЦИИ =====
         async function loadAllUsers() {
             try {
-                const snapshot = await db.collection('users').orderBy('createdAt', 'desc').get();
+                console.log('Начало на зареждане на потребители...');
+                let snapshot;
+                
+                try {
+                    // Опитваме с ordering
+                    snapshot = await db.collection('users').orderBy('createdAt', 'desc').get();
+                } catch (orderError) {
+                    console.warn('Ordering не работи, зареждаме без него:', orderError);
+                    // Ако ordering не работи, зареждаме без него
+                    snapshot = await db.collection('users').get();
+                }
+                
                 allUsers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                console.log(`Зареждени ${allUsers.length} потребители`);
                 filteredUsers = [...allUsers];
                 
                 updateAdminStats();
@@ -3709,9 +3836,12 @@
                 setupAdminSearch();
             } catch (error) {
                 console.error('Грешка при зареждане на потребители:', error);
-                document.getElementById('adminUsersTableBody').innerHTML = `
-                    <tr><td colspan="9" style="text-align: center; color: var(--accent);">❌ Грешка при зареждане</td></tr>
-                `;
+                const tbody = document.getElementById('adminUsersTableBody');
+                if (tbody) {
+                    tbody.innerHTML = `
+                        <tr><td colspan="9" style="text-align: center; color: var(--accent);">❌ Грешка при зареждане: ${error.message}</td></tr>
+                    `;
+                }
             }
         }
 
@@ -3745,17 +3875,25 @@
         function displayAdminUsers() {
             const tbody = document.getElementById('adminUsersTableBody');
             
-            if (!tbody) return;
+            if (!tbody) {
+                console.error('Таблицата за потребители не е намерена');
+                return;
+            }
+            
+            console.log('displayAdminUsers вызван, filteredUsers:', filteredUsers);
             
             if (filteredUsers.length === 0) {
+                console.warn('Няма потребители за показване');
                 tbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">Няма потребители</td></tr>';
-                document.getElementById('adminPagination').innerHTML = '';
+                updateAdminPagination();
                 return;
             }
 
             const startIndex = (currentAdminPage - 1) * usersPerPage;
             const endIndex = startIndex + usersPerPage;
             const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+            
+            console.log(`Показване на потребители ${startIndex + 1}-${Math.min(endIndex, filteredUsers.length)} от ${filteredUsers.length}`);
             
             const currentLang = document.body.getAttribute('data-lang') || 'bg';
 
@@ -3767,22 +3905,22 @@
                 
                 return `
                 <tr>
-                    <td>${user.firstName || '-'}</td>
-                    <td>${user.lastName || '-'}</td>
-                    <td>${user.email}</td>
-                    <td>${isAdminUser ? '<span class="admin-badge">' + (currentLang === 'bg' ? 'Админ' : 'Admin') + '</span>' : '<span class="user-badge">' + (currentLang === 'bg' ? 'Потребител' : 'User') + '</span>'}</td>
-                    <td>${user.emailVerified ? '✅' : '❌'}</td>
-                    <td>${user.provider === 'google' ? 'Google' : (currentLang === 'bg' ? 'Имейл' : 'Email')}</td>
-                    <td>${createdAt}</td>
-                    <td>${lastLogin}</td>
-                    <td>
-                        ${!isAdminUser 
-                            ? `<button class="btn-small btn-success" onclick="makeAdmin('${user.id}')">${currentLang === 'bg' ? 'Направи админ' : 'Make admin'}</button>`
-                            : `<button class="btn-small btn-warning" onclick="removeAdmin('${user.id}')">${currentLang === 'bg' ? 'Премахни' : 'Remove'}</button>`
-                        }
-                        <button class="btn-small btn-info" onclick="viewUserDetails('${user.id}')">${currentLang === 'bg' ? 'Детайли' : 'Details'}</button>
-                        <button class="btn-small btn-danger" onclick="deleteUser('${user.id}')">${currentLang === 'bg' ? 'Изтрий' : 'Delete'}</button>
-                    </td>
+                            <td data-label="${currentLang === 'bg' ? 'Име' : 'First'}">${user.firstName || '-'}</td>
+                            <td data-label="${currentLang === 'bg' ? 'Фамилия' : 'Last'}">${user.lastName || '-'}</td>
+                            <td data-label="${currentLang === 'bg' ? 'Имейл' : 'Email'}">${user.email}</td>
+                            <td data-label="${currentLang === 'bg' ? 'Роля' : 'Role'}">${isAdminUser ? '<span class=\"admin-badge\">' + (currentLang === 'bg' ? 'Админ' : 'Admin') + '</span>' : '<span class=\"user-badge\">' + (currentLang === 'bg' ? 'Потребител' : 'User') + '</span>'}</td>
+                            <td data-label="${currentLang === 'bg' ? 'Потв.' : 'Verif.'}">${user.emailVerified ? '✅' : '❌'}</td>
+                            <td data-label="${currentLang === 'bg' ? 'Провайдър' : 'Provider'}">${user.provider === 'google' ? 'Google' : (currentLang === 'bg' ? 'Имейл' : 'Email')}</td>
+                            <td data-label="${currentLang === 'bg' ? 'Регистрация' : 'Reg.'}">${createdAt}</td>
+                            <td data-label="${currentLang === 'bg' ? 'Последен вход' : 'Last Login'}">${lastLogin}</td>
+                            <td class="actions-cell" data-label="${currentLang === 'bg' ? 'Действия' : 'Actions'}">
+                                ${!isAdminUser 
+                                    ? `<button class=\"btn-small btn-success\" onclick=\"makeAdmin('${user.id}')\">${currentLang === 'bg' ? 'Направи админ' : 'Make admin'}</button>`
+                                    : `<button class=\"btn-small btn-warning\" onclick=\"removeAdmin('${user.id}')\">${currentLang === 'bg' ? 'Премахни' : 'Remove'}</button>`
+                                }
+                                <button class=\"btn-small btn-info\" onclick=\"viewUserDetails('${user.id}')\">${currentLang === 'bg' ? 'Детайли' : 'Details'}</button>
+                                <button class=\"btn-small btn-danger\" onclick=\"deleteUser('${user.id}')\">${currentLang === 'bg' ? 'Изтрий' : 'Delete'}</button>
+                            </td>
                 </tr>
             `}).join('');
 
@@ -4678,6 +4816,9 @@
                             }
                             
                             if (pageId === 'admin' && isAdmin) {
+                                console.log('Навигация на админ панел, зареждаме потребители...');
+                                console.log('isAdmin:', isAdmin);
+                                console.log('currentUser:', currentUser ? currentUser.uid : 'няма');
                                 loadAllUsers();
                             }
                             
