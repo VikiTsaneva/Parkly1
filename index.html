@@ -1569,6 +1569,78 @@
             }
         }
 
+        /* Notification съобщение */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            border-left: 5px solid var(--success);
+            display: none;
+            z-index: 10000;
+            animation: slideInRight 0.3s ease;
+            max-width: 400px;
+            word-wrap: break-word;
+            transition: all 0.3s ease;
+        }
+
+        .notification.success {
+            border-left-color: var(--success);
+        }
+
+        .notification.error {
+            border-left-color: var(--accent);
+        }
+
+        .notification.show {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification i {
+            font-size: 1.2rem;
+            min-width: 20px;
+        }
+
+        .notification.success i {
+            color: var(--success);
+        }
+
+        .notification.error i {
+            color: var(--accent);
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(400px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(400px);
+            }
+        }
+
+        .notification.hide {
+            animation: slideOutRight 0.3s ease forwards;
+        }
+
         .modal-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -2617,6 +2689,14 @@
             .users-table td.actions-cell .btn-small {
                 width: 100%;
             }
+
+            /* Notification за мобилни устройства */
+            .notification {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
         }
 
         [data-lang="bg"] .lang-en {
@@ -3276,14 +3356,16 @@
         </div>
         <div class="modal-body">
             <form class="contact-form" id="contactForm">
-                <textarea class="lang-bg" placeholder="Вашето съобщение..." required></textarea>
-                <textarea class="lang-en" placeholder="Your message..." required></textarea>
+                <textarea id="contactMessage" name="message" placeholder="Вашето съобщение..." required></textarea>
                 <button type="submit" class="btn btn-block">
                     <i class="fas fa-paper-plane"></i> <span class="lang-bg">Изпрати</span><span class="lang-en">Send</span>
                 </button>
             </form>
         </div>
     </div>
+
+    <!-- Notification съобщение -->
+    <div class="notification" id="notification"></div>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -3293,6 +3375,9 @@
     
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     
     <script>
         // ===== Firebase конфигурация =====
@@ -3319,6 +3404,9 @@
         // Инициализиране на второ приложение за Realtime Database
         const secondaryApp = firebase.initializeApp(databaseConfig, "secondary");
         const rtdb = secondaryApp.database();
+        
+        // Инициализиране на EmailJS (заменете с вашите данни от https://www.emailjs.com/)
+        emailjs.init("1HnRmk_dhUEdS49Eq");
         
         // ===== Глобални променливи =====
         let currentUser = null;
@@ -4661,6 +4749,23 @@
             }
         };
 
+        // ===== ФУНКЦИЯ ЗА УВЕДОМЛЕНИЯ =====
+        function showNotification(message, type = 'success') {
+            const notificationEl = document.getElementById('notification');
+            const icon = type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-circle"></i>';
+            
+            notificationEl.innerHTML = icon + ' ' + message;
+            notificationEl.className = `notification ${type} show`;
+            
+            // Скриване на уведомлението след 3 секунди
+            setTimeout(() => {
+                notificationEl.classList.add('hide');
+                setTimeout(() => {
+                    notificationEl.classList.remove('show', 'hide');
+                }, 300);
+            }, 3000);
+        }
+
         // ===== ФУНКЦИИ ЗА ТЕМА И ЕЗИК =====
         function toggleTheme() {
             document.body.classList.toggle('dark-theme');
@@ -4680,6 +4785,12 @@
         function setLanguage(lang) {
             document.body.setAttribute('data-lang', lang);
             localStorage.setItem('language', lang);
+            
+            // Актуализиране на placeholder на контактния textarea
+            const contactMessage = document.getElementById('contactMessage');
+            if (contactMessage) {
+                contactMessage.placeholder = lang === 'bg' ? 'Вашето съобщение...' : 'Your message...';
+            }
             
             // Актуализиране на статусите на паркоместата според езика
             if (currentUser) {
@@ -4942,15 +5053,78 @@
                 }
             });
             
-            contactForm.addEventListener('submit', function(e) {
+            contactForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                const message = this.querySelector('textarea').value;
-                if (message.trim() !== '') {
-                    const currentLang = document.body.getAttribute('data-lang') || 'bg';
-                    alert(currentLang === 'bg' ? 'Вашето съобщение беше изпратено успешно!' : 'Your message was sent successfully!');
-                    this.querySelector('textarea').value = '';
-                    contactModal.classList.remove('active');
+                console.log('Contact form submitted');
+                
+                const contactMessage = document.getElementById('contactMessage');
+                const message = contactMessage.value.trim();
+                const currentLang = document.body.getAttribute('data-lang') || 'bg';
+                
+                console.log('Current user:', currentUser);
+                console.log('Message:', message);
+                
+                if (!currentUser) {
+                    showNotification(currentLang === 'bg' ? 'Моля, влезте в профила си, за да изпратите съобщение.' : 'Please log in to send a message.', 'error');
+                    return;
                 }
+                
+                if (!message) {
+                    console.log('Empty message');
+                    return;
+                }
+                
+                // Вземаме полное име или displayName от текущия потребител
+                let userName = currentUser.displayName;
+                
+                try {
+                    if (!userName) {
+                        // Опитваме да вземем fullName, firstName + lastName от профила в Firestore
+                        const doc = await db.collection('users').doc(currentUser.uid).get();
+                        if (doc.exists) {
+                            const userData = doc.data();
+                            userName = userData.fullName || `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || currentUser.email;
+                        } else {
+                            userName = currentUser.email;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                    userName = currentUser.email;
+                }
+                
+                if (!userName) userName = currentUser.email;
+                
+                // Генериране на текущото време
+                const now = new Date();
+                const time = now.toLocaleString(currentLang === 'bg' ? 'bg-BG' : 'en-US', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+
+                const templateParams = {
+                    name: userName,
+                    email: currentUser.email,
+                    time: time,
+                    message: message
+                };
+                
+                console.log('Sending email with params:', templateParams);
+
+                emailjs.send('service_tocc10u', 'template_qqogumr', templateParams)
+                    .then(function(response) {
+                        console.log('Email sent successfully:', response);
+                        showNotification(currentLang === 'bg' ? 'Вашето съобщение беше изпратено успешно!' : 'Your message was sent successfully!', 'success');
+                        contactMessage.value = '';
+                        contactModal.classList.remove('active');
+                    }, function(error) {
+                        console.error('EmailJS error:', error);
+                        showNotification(currentLang === 'bg' ? 'Грешка при изпращане на съобщението. Опитайте отново.' : 'Error sending message. Please try again.', 'error');
+                    });
             });
             
             contactModal.addEventListener('click', function(e) {
